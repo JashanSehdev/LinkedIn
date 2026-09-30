@@ -1,13 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Search } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto.js';
 import { UpdatePostDto } from './dto/update-post.dto.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity.js';
 import { Repository } from 'typeorm';
-import { Request } from 'express';
 import { User } from '../users/entites/users.entity.js';
 import { Like } from '../like/entities/like.entity.js';
-
+import { FilterDto } from './dto/filter-dto.js';
 
 export interface FeedPost {
   author: string;
@@ -17,7 +16,7 @@ export interface FeedPost {
   createdAt: string;
   shares: number;
   comments: Comment[];
-  likes: Like
+  likes: Like;
 }
 @Injectable()
 export class PostService {
@@ -32,27 +31,38 @@ export class PostService {
       ...post,
       author: 'Chetan',
       hashtags: ['#Achievement'],
-      createdAt:Date.now().toString(),
+      createdAt: Date.now().toString(),
       shares: 3,
       content: createPostDto.content,
-      media : createPostDto.media,
-
-    }
+      media: createPostDto.media,
+    };
     return this.postRepository.save(createdPost);
   }
 
-  async findAll() {
-    return await this.postRepository.find( {
-      relations: {
-        likes :true
-      }
+  async findAll(filter: FilterDto) {
+  const query = this.postRepository
+    .createQueryBuilder('post')
+    .leftJoinAndSelect('post.likes', 'Like')
+    .leftJoinAndSelect('post.comments', 'Comment')
+    .where('Comment.parentId IS NULL') 
+    .leftJoinAndSelect('Comment.childComments', 'reply'); 
+
+  if (filter.search) {
+    query.andWhere('post.content ILike :search', {
+      search: `%${filter.search}%`,
     });
   }
+  return await query.getMany();
+}
 
   async findOne(id: number) {
     return await this.postRepository.findOne({
-      relations:{
-        likes:true,
+      relations: {
+        likes: true,
+        comments: {
+          childComments:true
+        },
+        user:true
       },
       where: {
         id,
@@ -66,12 +76,12 @@ export class PostService {
 
     Object.assign(post, updatePostDto);
 
-     return await this.postRepository.save(post);
+    return await this.postRepository.save(post);
   }
 
   async remove(id: number) {
-    const post = await  this.findOne(id)
+    const post = await this.findOne(id);
     if (!post) return new NotFoundException('post not found');
-    return await this.postRepository.remove(post)
+    return await this.postRepository.remove(post);
   }
 }

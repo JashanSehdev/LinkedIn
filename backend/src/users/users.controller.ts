@@ -12,6 +12,7 @@ import { CreateUserDto } from './dto/create-user.dto.js';
 
 import type  {   Request,  Response } from 'express';
 import { LoginUserDto } from './dto/login-user-dtp.js';
+import { GoogleAuthDto } from './dto/google-auth.dto.js';
 
 
 @Controller('auth')
@@ -43,6 +44,18 @@ export class UsersController {
     });
 
     return { message: 'Authentication successful' };
+  }
+
+  @Post('google')
+  async googleAuth(@Body() googleAuthDto : GoogleAuthDto, @Res({passthrough: true}) response : Response) {
+    const token_data = await this.usersService.googleAuth(googleAuthDto)
+    response.cookie('access_token', token_data.access_token, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 1 * 24 * 60 * 60 * 1000,
+    });
+    return "Authentication Successful"
   }
 
   @Get('me')

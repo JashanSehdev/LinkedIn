@@ -1,12 +1,15 @@
 
-export type LikeOutput = {
-    id : number,
-    data : Like
-}
 
-type Like = {
+export type Like = {
     id :number
     userId : number,
-    postId : number
+    postId : number,
+    isDeleted : boolean
     
+}
+
+
+export type CommentInput = {
+    postId :number,
+    text : string
 }

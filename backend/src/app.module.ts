@@ -9,6 +9,7 @@ import { PostModule } from './post/post.module.js';
 import { LikeModule } from './like/like.module.js';
 import { AuthMiddleware } from './middleware/auth.middleware.js';
 import { UsersController } from './users/users.controller.js';
+import { CommentModule } from './comment/comment.module.js';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { UsersController } from './users/users.controller.js';
     UsersModule,
     PostModule,
     LikeModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -45,6 +47,7 @@ export class AppModule implements NestModule {
       .exclude(
         { path: 'auth/login', method: RequestMethod.POST },
         { path: 'auth/register', method: RequestMethod.POST },
+        { path: 'auth/google', method: RequestMethod.POST }
       ) 
       .forRoutes('*'); 
   }

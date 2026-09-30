@@ -1,11 +1,11 @@
 import { User } from "@/types/user";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { FeedPost } from "@/types/feed";
+import {  Post } from "@/types/feed";
 import { createPostAsync, fetchAllFeedAsync, likeAsync } from "./handle-feed/feed.action";
-import { LikeOutput } from "./handle-feed/feed.type";
+import { Like, LikeOutput } from "./handle-feed/feed.type";
 
 type InitialState = {
-    feeds: FeedPost[]
+    feeds: Post[]
 }
 
 const initialState : InitialState = {
@@ -18,19 +18,29 @@ const feedSlice = createSlice({
     reducers:{},
     extraReducers : (builder) => {
  
-        builder.addCase(fetchAllFeedAsync.fulfilled, (state, action) => {
+        builder
+        .addCase(fetchAllFeedAsync.fulfilled, (state, action) => {
             state.feeds = action.payload
-        });
+        })
 
-        builder.addCase(createPostAsync.fulfilled, (state, action) => {
+        .addCase(createPostAsync.fulfilled, (state, action) => {
             state.feeds.push(action.payload)
-        });
+        })
 
-        // builder.addCase(likeAsync.fulfilled, (state, action ) => {
-        //     const post = state.feeds.find((feed) => feed.id === action?.payload?.id)
+        .addCase(likeAsync.fulfilled, (state, action: PayloadAction<Like> ) => {
+            const like = action.payload
+            
+            const post = state.feeds.find((feed) => feed.id === like.postId);
 
-        //     if (post.likes.include ())
-        // })
+            if (!post) return
+            if (like.isDeleted) {
+                post.likes = post.likes.filter((item) => like.id !== item.id)
+            } else {
+                const {isDeleted, ...liked} = like
+                post.likes.push(liked)
+            }
+            
+        })
     }
 }) 
 

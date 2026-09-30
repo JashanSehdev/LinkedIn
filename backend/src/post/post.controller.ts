@@ -1,21 +1,36 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { PostService } from './post.service.js';
 import { CreatePostDto } from './dto/create-post.dto.js';
 import { UpdatePostDto } from './dto/update-post.dto.js';
 import { Request } from 'express';
+import { FilterDto } from './dto/filter-dto.js';
 
 @Controller('posts')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post()
-  create(@Body() createPostDto: CreatePostDto, @Req() req : Request & {user : any}) {
+  create(
+    @Body() createPostDto: CreatePostDto,
+    @Req() req: Request & { user: any },
+  ) {
     return this.postService.create(createPostDto, req.user);
   }
 
   @Get()
-  findAll() {
-    return this.postService.findAll();
+  findAll(@Query() search: FilterDto) {
+    return this.postService.findAll(search);
   }
 
   @Get(':id')

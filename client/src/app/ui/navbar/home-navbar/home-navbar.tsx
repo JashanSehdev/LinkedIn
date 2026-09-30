@@ -6,11 +6,13 @@ import styles from "./home-navbar.module.css";
 import Searchbar from "./search-bar/searchbar";
 import Link from "next/link";
 import AccountMenu from "./account-menu/account-menu";
+import { ChangeEvent } from "react";
 
 const profilePic =
   "https://i.pinimg.com/736x/ce/ad/94/cead941fca1ea8075e01f564f1eedf98.jpg";
 
 export default function HomeNavbar() {
+
   return (
     <Paper className={styles.container}>
       <Box className={styles.wrapper}>

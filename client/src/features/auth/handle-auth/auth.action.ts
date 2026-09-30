@@ -63,3 +63,19 @@ export const logoutUserAsync =  createAsyncThunk(
         }
     }
 )
+
+export const googleLoginAsync =  createAsyncThunk(
+    'auth/googleLogin',
+    async (email : string, thunkApi) => {
+          try {
+            const response = await api.post("/auth/google", {email})
+            console.log(response.data)
+            // redirect("/")
+
+        } catch(error : any) {
+            thunkApi.rejectWithValue(
+                error?.response?.data || 'something went wrong'
+            )
+        }
+    }
+)

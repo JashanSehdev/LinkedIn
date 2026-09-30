@@ -27,15 +27,16 @@ export class LikeService {
     
 
     if (staleLike) {
-      await this.remove(staleLike.id);
-      return {message : 'like deleted'}
+      const deletedLike = await this.remove(staleLike.id);
+      return {...deletedLike, isDeleted : true}
     }
     const like = this.likeRepository.create({
       postId : post.id,
       userId : user.id
     })
 
-    return this.likeRepository.save(like)
+    const savedLike = await this.likeRepository.save(like)
+    return {...savedLike, isDelete: false}
   }
 
   findAll() {
@@ -64,7 +65,8 @@ export class LikeService {
   async remove(id: number) {
     const like = await this.findLikeById(id);
     if (like) {
-      return this.likeRepository.delete(like);
+      await this.likeRepository.delete(like);
+      return like
     }
   }
 }

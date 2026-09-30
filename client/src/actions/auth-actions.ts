@@ -1,12 +1,24 @@
 'use client'
 
+import { api } from "@/app/api/api";
 import { auth } from "@/lib/firebase";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
 import { redirect } from "next/navigation";
 import { SetStateAction, Dispatch } from "react";
 
-
+// const sendLoginRequest = async({email}:{email: string}) => {
+//   try{
+//     const response = await api.post('/auth/google');
+//     return 
+//     }
+//   } catch(error) {
+//     console.error(error)
+//     throw error
+//   }
+  
+  
+// }
 export const createSession = async (idToken: string) => {
   const res = await fetch("/api/session", {
     method: "POST",
@@ -26,9 +38,9 @@ export const handleGoogleLogin = async () => {
     const result = await signInWithPopup(auth, provider);
     const idToken = await result.user.getIdToken();
 
-    await createSession(idToken);
+    // await createSession(idToken);
     
-    redirect("/feed");
+    return result.user.email
   } catch (error: any) {
     console.error(error);
     throw error;

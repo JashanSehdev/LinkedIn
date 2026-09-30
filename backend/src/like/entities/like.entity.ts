@@ -13,10 +13,10 @@ export class Like {
   @JoinColumn({ name: 'userId' })
   user: Relation<User>;
 
-  @Column({type : 'number'})
+  @Column({type : 'integer'})
   userId: number;
 
-  @Column({type: 'number'})
+  @Column({type: 'integer'})
   postId: number;
 
   @ManyToOne(() => Post, (post) => post.likes)

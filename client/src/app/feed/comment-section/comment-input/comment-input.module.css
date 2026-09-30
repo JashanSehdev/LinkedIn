@@ -1,0 +1,28 @@
+
+.container{
+    display: flex;
+    position:relative;
+    width: 100%;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+.inputContainer {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    border: 2px solid gray;
+    border-radius: 10rem;
+    padding-left: 0.3rem;
+}
+
+.inputContainer input {
+    width: 100%;
+    border-radius: 10rem;
+    padding:0.2rem;
+    border: none;
+    outline : none
+}
+
+.emojiTray{
+    position: absolute;
+}

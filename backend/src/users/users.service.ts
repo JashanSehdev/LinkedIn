@@ -14,6 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import { LoginUserDto } from './dto/login-user-dtp.js';
 import { NotFoundError } from 'rxjs';
 import { Request } from 'express';
+import { GoogleAuthDto } from './dto/google-auth.dto.js';
 
 @Injectable()
 export class UsersService {
@@ -85,19 +86,31 @@ export class UsersService {
     }
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async googleAuth (googleAuthDto : GoogleAuthDto) : Promise<{ access_token: string | null }> {
+    const fetchedUser = await this.userRepository.findOne({
+      where: {
+        email: googleAuthDto.email,
+      },
+    });
+    let payload = {}
+    if (fetchedUser) {
+      payload = {id : fetchedUser.id, email : fetchedUser.email}
+    } else {
+      const createdUser = this.userRepository.create({...googleAuthDto, password : 'Google Auth'});
+      const user = await this.userRepository.save(createdUser);
+      payload = {id : user.id, email : user.email}
+    }
+    return {
+      access_token : await this.jwtService.signAsync(payload)
+    }
+
   }
 
   async findOne(id: number) {
     return await this.userRepository.findOne({where:{id}});
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
+
+
 }

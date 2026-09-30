@@ -22,7 +22,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import Link from "next/link";
 import { useAppDispatch } from "@/features/store";
-import { signupUserAsync } from "@/features/auth/handle-auth/auth.action";
+import { getUserAsync, signupUserAsync } from "@/features/auth/handle-auth/auth.action";
+import { redirect } from "next/navigation";
 
 
 
@@ -46,7 +47,10 @@ export default function SignupCard() {
   const onSubmit: SubmitHandler<FormData> = async(data)=>{
     setLoading(true)
     await dispatch(signupUserAsync(data))
+    await dispatch(getUserAsync())
     setLoading(false)
+    redirect("/feed")
+    
   }
   return (
     <Paper className={styles.container}>

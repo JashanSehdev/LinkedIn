@@ -5,7 +5,9 @@ import { postComments } from "@/data/comments";
 import CommentCard from "../comment-section/comments/comments";
 import {  useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/features/store";
-import { likeAsync } from "@/features/feed/handle-feed/feed.action";
+import { fetchAllFeedAsync, likeAsync } from "@/features/feed/handle-feed/feed.action";
+import { Post } from "@/types/feed";
+import CommentSection from "../comment-section/comment-section";
 
 type Like = {
   id : number,
@@ -14,45 +16,46 @@ type Like = {
 }
 
 type Prop = {
-  post: any; 
+  post: Post; 
 };
+
+const profilePic = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZoUCWyo0v99yE5-EXx56NlHdIsvsnOT0lFvj4CPqtJw&s=10'
 export default function FeedCard({ post }: Prop) {
   const dispatch = useAppDispatch()
   const user = useAppSelector((state) =>state.auth.user)
   const [showComments, setShowComments] = useState<boolean>(false);
-  const isLiked = post.likes.some((like : Like) => like.userId === user?.id);
-  const handleLike = () => {
-    dispatch(likeAsync(post.id))
+  const isLiked = post?.likes?.some((like : Like) => like.userId === user?.id);
+  const handleLike = async() => {
+    await dispatch(likeAsync(post.id))
   }
 
-  console.log("post-media" ,post.media)
   console.log('isLiked' , isLiked)
   return (
     <Paper className={styles.container}>
       <Box className={styles.section1}>
         <Box>
-          <Avatar src={post.author.profileImage} className={styles.avatar} />
+          <Avatar src={profilePic} className={styles.avatar} />
         </Box>
         <Box className={styles.author_data}>
           <Box className={styles.menubar}>
-            <p className={styles.username}>{post.author.name}</p>
+            <p className={styles.username}>{post?.author}</p>
             <button className={styles.follow_button}> + Follow</button>
           </Box>
-          <p className={styles.bio}>{post.author.headline}</p>
+          {/* <p className={styles.bio}>{post.author.headline}</p> */}
           <p className={styles.post_date}>1d</p>
         </Box>
       </Box>
       <Box>
-        <p className={styles.description}>{post.content}</p>
+        <p className={styles.description}>{post?.content}</p>
       </Box>
       <Box className={styles.images}>
         {
-          post.media && <Box className={styles.image} component={"img"} src={post?.media} />
+          post?.media && <Box className={styles.image} component={"img"} src={post?.media} />
         }
         
       </Box>
       <Box className={styles.like_section}>
-        {/* <p>{post.reactions.likes} likes</p> */}
+        <p>{post?.likes?.length} likes</p>
         <Box>
           {/* {post.comments.length > 0 && <p>{post.comments.length} comments</p>} */}
         </Box>
@@ -135,7 +138,8 @@ export default function FeedCard({ post }: Prop) {
       {
         showComments && (
           <Box className={styles.commentSection}>
-        {postComments.map((comment) => (
+            <CommentSection />
+        {post.comments.map((comment) => (
           // <CommentItem key={comment.id} comment={comment} />
           <CommentCard key={comment.id} comment={comment}/>
         ))}
