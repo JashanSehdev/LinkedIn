@@ -1,0 +1,33 @@
+
+.container{
+    width: 100%;
+    padding: 1rem;
+}
+
+.section1 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+.sub_title {
+    color:#736f6f;
+    margin: 0.5rem 0 !important;
+}
+
+.headline {
+        display: -webkit-box;
+    -webkit-box-orient: vertical;
+     -webkit-line-clamp: 1;
+    overflow: hidden;
+    font-weight: bolder !important;
+}
+
+.readers{
+    color: #736f6f 
+}
+
+.news{
+    margin: 0.5rem 0;
+}

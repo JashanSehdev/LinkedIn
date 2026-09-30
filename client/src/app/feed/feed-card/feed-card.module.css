@@ -1,0 +1,126 @@
+
+.avatar {
+    height: 55px !important;
+    width: 55px !important;
+    margin: auto;
+    object-fit: cover;
+}
+
+.images{
+    width:100%
+}
+
+.container {
+    margin:auto;
+    max-width: 523.5px;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.section1{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 0.4rem;
+}
+
+.username{
+    font-weight: 600;
+    font-size: 1rem;
+
+}
+.author_data{
+    width: 100%;
+}
+
+.bio{
+    font-size: 0.8rem;
+    color:#666666 ;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+     -webkit-line-clamp: 1;
+    overflow: hidden;
+}
+
+.post_date{
+    color: #666666;
+    font-size: 0.8rem;
+}
+.follow_button{
+    font-size: 0.8rem !important;
+    font-weight: bolder !important;
+    width: 5rem;
+    padding: 0 0.2rem !important;
+    color: #0a66c2;
+    outline: none;
+    background-color:transparent;
+    border: none;
+    align-self: flex-start;
+    padding: 0 0.2rem;
+    width: 6rem;
+}
+
+.menubar{
+    display: flex;
+    justify-content: space-between;
+}
+
+.description{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    font-size: 0.9rem ;
+    line-height:1.3rem ;
+    text-align:start;
+    margin-top: 0.3rem;
+}
+
+.image{
+    overflow: hidden;
+    width: 100%;
+}
+.images {
+
+}
+
+
+.buttons{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    align-items: center;
+    height: 1.7rem;
+    padding: 0.5rem 0;
+    margin-bottom: 0.5rem;
+}
+
+.button {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem;
+    font-size: 0.8rem;
+    font-weight: bolder;
+}
+.button:hover {
+    background-color: rgba(0, 0, 0,0.05);
+}
+
+.like_section{
+    margin-top: 0.7rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.like_section p{
+    font-size: 0.9rem;
+    color: #666666;
+    margin-bottom: 0.2rem;
+}
+
+.commentSection{
+    margin-top: 1rem;
+}

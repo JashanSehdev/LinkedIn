@@ -1,0 +1,24 @@
+
+.container{
+    padding: 1rem 0rem 1rem 0rem;
+    width: 312;
+
+}
+.header {
+    font-weight: bolder;
+    padding-left: 1rem;
+    padding-bottom: 1rem;
+}
+
+.listText{
+    color: black !important;
+    font-weight:bolder !important;
+
+}
+.listItem{
+    padding: 0.5rem  0rem !important;
+}
+
+.footer {
+    color: #0a66c2;
+}

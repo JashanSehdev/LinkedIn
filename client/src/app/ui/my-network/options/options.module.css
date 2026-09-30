@@ -1,0 +1,10 @@
+
+.container{
+    padding: 1rem 0rem 0rem 0rem;
+    width: 18rem;
+}
+.header {
+    font-weight: bolder;
+    padding-left: 1rem;
+    padding-bottom: 1rem;
+}

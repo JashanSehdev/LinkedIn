@@ -1,0 +1,59 @@
+
+.container {
+    height: 3rem;
+}
+
+.logo{
+    height: 2rem;
+    width: 2.5rem;
+    object-fit: cover;
+}
+
+.wrapper{
+    width: 1116px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    justify-content: space-between;
+}
+.section1{
+    display: flex;
+    
+}
+
+.buttons{
+    display: flex;
+    align-items: center;
+    
+}
+
+.button {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 2.5rem;
+    width: 5rem;
+    text-decoration: none;
+    color: black;
+}
+
+.button p {
+    font-size: 12px;
+}
+
+.special_button {
+    width: 130px;
+}
+
+.avatar{
+    height: 25px !important;
+    width: 25px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.caption{
+    display: flex;
+    align-items: center;
+}

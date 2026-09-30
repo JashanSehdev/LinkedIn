@@ -1,0 +1,8 @@
+.container {
+    margin:auto;
+    width: 100%;
+    margin-bottom: 0.5rem;
+    max-height: 81dvh;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}

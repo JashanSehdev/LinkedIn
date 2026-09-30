@@ -1,0 +1,47 @@
+
+.container {
+    width: 312;
+    border-radius: 10px;
+}
+
+.details{
+    margin-top: -2rem;
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.title {
+    font-size: 1.4rem;
+    margin-bottom: 0.2rem;
+    font-weight: 550;
+
+}
+.bio {
+    font-size: 0.8rem;
+    margin-bottom: 0.2rem;
+    color:#404040 ;
+    
+}
+
+.location {
+    font-size: 0.7rem;
+    color:#525252 ;
+}
+
+.avatar {
+    height: 80px !important;
+    width: 80px !important;
+    position: relative;
+    top: -2rem;
+    left: 1rem;
+    bottom: 20px;
+}
+
+.banner {
+    height: 3rem;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 10px 10px 0 0;
+
+
+}

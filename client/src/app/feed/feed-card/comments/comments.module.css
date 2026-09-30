@@ -1,0 +1,43 @@
+.replies {
+  position: relative;
+  margin-left: 20px;
+  padding-left: 30px;
+}
+
+.replies::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 20px;
+
+  width: 2px;
+  background: #e0e0e0;
+}
+
+.replies .commentWrapper::before {
+  content: "";
+
+  position: absolute;
+  left: -30px;
+  top: 32px;
+
+  width: 30px;
+  height: 2px;
+
+  background: #e0e0e0;
+}
+
+.replies .commentWrapper::before {
+  content: "";
+
+  position: absolute;
+
+  left: -30px;
+  top: 32px;
+
+  width: 30px;
+  height: 2px;
+
+  background: #e0e0e0;
+}

@@ -1,0 +1,32 @@
+.container{
+    background-color: #f4f2ee;
+    padding-top: 2rem;
+    height: 90dvh;
+}
+.sub_container{
+    margin: auto;
+    max-width: 1116px ;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.left_section{
+    width: 14rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.right_section {
+    width: 4rem;
+}
+
+.mid_section {
+    overflow-y: scroll;
+    scrollbar-width: none;
+    width: 34.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+
+}

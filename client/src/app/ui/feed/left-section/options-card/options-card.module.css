@@ -1,0 +1,19 @@
+
+.container {
+    padding: 1rem;
+    width: 85%;
+}
+
+.option {
+    display: flex;
+    gap: 0.5rem;
+    height: 2rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    align-items: center;
+}
+
+.option:hover  p{
+    color:#0a66c2;
+    text-decoration: underline;
+}

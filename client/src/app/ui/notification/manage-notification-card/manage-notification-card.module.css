@@ -1,0 +1,15 @@
+.container {
+    padding: 1rem;
+}
+
+.link{
+    color: #0a66c2;
+    font-weight: bolder !important;
+    text-decoration: underline;
+}
+
+.title {
+    font-weight: bolder !important;
+    margin-bottom: 0.5rem !important;
+    
+}

@@ -1,0 +1,25 @@
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn,type Relation } from 'typeorm';
+import { User } from '../../users/entites/users.entity.js';
+import { Post } from '../../post/entities/post.entity.js';
+import { join } from 'path';
+
+@Entity('like')
+export class Like {
+
+  @PrimaryGeneratedColumn()
+  id : number
+
+  @ManyToOne(() => User, (user) => user.likes)
+  @JoinColumn({ name: 'userId' })
+  user: Relation<User>;
+
+  @Column({type : 'number'})
+  userId: number;
+
+  @Column({type: 'number'})
+  postId: number;
+
+  @ManyToOne(() => Post, (post) => post.likes)
+  @JoinColumn({ name: 'postId' })
+  post: Relation<Post>;
+}

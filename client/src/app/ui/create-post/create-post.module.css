@@ -1,0 +1,5 @@
+.form_control:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  background: red !important;
+}

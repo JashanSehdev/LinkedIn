@@ -1,0 +1,28 @@
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+}
+
+.section1 {
+    display: flex;
+    gap: 0.7rem;
+    
+}
+
+.logo {
+    height: 40;
+    width: 40;
+
+}
+.title {
+    font-weight: 500;
+    color: #0a66c2;
+}
+
+.showAll {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center;
+}

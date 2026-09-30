@@ -1,0 +1,61 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Res,
+  Req,
+} from '@nestjs/common';
+import { UsersService } from './users.service.js';
+import { CreateUserDto } from './dto/create-user.dto.js';
+
+import type  {   Request,  Response } from 'express';
+import { LoginUserDto } from './dto/login-user-dtp.js';
+
+
+@Controller('auth')
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
+
+  @Post('register')
+  async createUser(@Body() createUserDto: CreateUserDto, @Res({passthrough: true}) response : Response) {
+    console.log('request hit')
+    const token_data = await this.usersService.create(createUserDto);
+    response.cookie('access_token', token_data.access_token, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 1 * 24 * 60 * 60 * 1000,
+    });
+
+    return { message: 'Authentication successful' };
+  }
+  
+  @Post('login')
+  async loginUser(@Body() loginUserDto : LoginUserDto, @Res({passthrough: true}) response : Response) {
+    const token_data = await this.usersService.login(loginUserDto);
+    response.cookie('access_token', token_data.access_token, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 1 * 24 * 60 * 60 * 1000,
+    });
+
+    return { message: 'Authentication successful' };
+  }
+
+  @Get('me')
+  async getMe (@Req() req : Request){
+    const user = await this.usersService.verifyMe(req);
+    
+    return user;
+  }
+
+  @Get("logout")
+  async logout (@Res({passthrough: true}) res : Response) {
+      res.clearCookie('access_token');
+
+      return ({message: "User successfully logout"})
+  }
+}

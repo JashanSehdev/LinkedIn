@@ -1,0 +1,63 @@
+.avatar {
+  position: relative;
+  z-index: 100;
+  bottom: 40px;
+  left: 50px;
+  height: 100px !important;
+  width: 100px !important;
+}
+
+.container {
+  width: 11.5rem;
+  border-radius: 20px;
+  padding: 0rem 0rem 1rem 0rem;
+  height: 19rem;
+}
+
+.banner {
+  width: 100%;
+  height: 4rem;
+  object-fit: cover;
+  border-radius: 10px 10px 0px 0px;
+}
+
+.button {
+  padding: 0.2rem 2rem !important;
+  border: 2px solid !important;
+  border-radius: 100px !important;
+  margin: auto !important;
+  display: block !important;
+}
+
+.bio {
+  margin-top: -60;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.name {
+  font-weight: 600 !important;
+}
+
+.close {
+  background-color: black;
+  height: 2rem;
+  width: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50px;
+  position: relative;
+  bottom: 9.8rem;
+  left: 9rem;
+}
+
+.headline {     
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
