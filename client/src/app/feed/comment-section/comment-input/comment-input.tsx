@@ -20,11 +20,10 @@ export default function CommentInput({postId}: Prop) {
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     const {key, target} = event
     
-    if (key !== 'Enter') return
+    if (key !== 'Enter' || !target.value.trim()) return
     console.log(dispatch(createCommentAsync({postId, text: target.value })))
 
-    
-    
+    setComment("")
   };
   return (
     <Box className={styles.container}>

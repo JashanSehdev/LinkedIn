@@ -3,13 +3,16 @@ import { Box } from "@mui/material";
 import { useState } from "react";
 import CommentInput from "./comment-input/comment-input";
 
-export default function CommentSection() {
-    const [toogleInput, setToggleInput] = useState(false);
+type Prop =  {
+    postId : number
+}
+export default function CommentSection({postId} : Prop) {
+    const [toggleInput, setToggleInput] = useState(false);
 
     return (
         <Box>
             <Box>
-                <CommentInput postId={1}/>
+                <CommentInput postId={postId}/>
             </Box>
             
         </Box>

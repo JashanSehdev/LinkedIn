@@ -73,7 +73,8 @@ export class CommentService {
     return this.commentRepository.update(id, updateCommentDto);
   }
 
-  remove(id: number) {
-    return this.commentRepository.delete(id);
+  async remove(id: number) {
+    const comment = await this.findOne(id)
+    return this.commentRepository.remove(comment);
   }
 }

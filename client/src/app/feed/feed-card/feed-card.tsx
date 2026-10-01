@@ -29,7 +29,6 @@ export default function FeedCard({ post }: Prop) {
     await dispatch(likeAsync(post.id))
   }
 
-  console.log('isLiked' , isLiked)
   return (
     <Paper className={styles.container}>
       <Box className={styles.section1}>
@@ -138,7 +137,7 @@ export default function FeedCard({ post }: Prop) {
       {
         showComments && (
           <Box className={styles.commentSection}>
-            <CommentSection />
+            <CommentSection postId={post.id} />
         {post.comments.map((comment) => (
           // <CommentItem key={comment.id} comment={comment} />
           <CommentCard key={comment.id} comment={comment}/>

@@ -13,3 +13,9 @@ export type CommentInput = {
     postId :number,
     text : string
 }
+
+export type NestedCommentInput = {
+    postId :number,
+    text : string,
+    parentId: number
+}

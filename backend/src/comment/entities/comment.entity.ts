@@ -19,10 +19,10 @@ export class Comment {
     @Column({type : 'integer'})
     postId : number
 
-    @OneToMany(() => Comment , (comment) => comment.parentComment)
+    @OneToMany(() => Comment , (comment) => comment.parentComment, { cascade: true })
     childComments : Comment[]
 
-    @ManyToOne(() => Comment, (comment) => comment.childComments)
+    @ManyToOne(() => Comment, (comment) => comment.childComments, { onDelete: 'CASCADE' })
     @JoinColumn({name : 'parentId', referencedColumnName : 'id'})
     parentComment : Comment
 

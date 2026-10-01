@@ -1,7 +1,7 @@
 import { api } from "@/app/api/api";
 import { Inputs } from "@/app/ui/create-post/create-post";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { CommentInput, Like, LikeOutput } from "./feed.type";
+import { CommentInput, Like, NestedCommentInput } from "./feed.type";
 
 
 export const fetchAllFeedAsync = createAsyncThunk(
@@ -56,7 +56,7 @@ export const createPostAsync = createAsyncThunk(
 )
 
 export const createCommentAsync = createAsyncThunk(
-    'feed/createPost',
+    'feed/createComment',
     async(data : CommentInput ,thunkApi) => {
         try{
             const response = await api.post("/comment", data);
@@ -70,3 +70,36 @@ export const createCommentAsync = createAsyncThunk(
         }
     }
 )
+
+export const createNestedCommentAsync = createAsyncThunk(
+    'feed/createNestedComment',
+    async(data : NestedCommentInput ,thunkApi) => {
+        try{
+            const response = await api.post(`/comment/${data.parentId}`, data);
+            console.log("response", response.data)
+            return response.data 
+
+        } catch(error : any) {
+            thunkApi.rejectWithValue(
+                error?.response?.data || 'something went wrong'
+            )
+        }
+    }
+)
+
+export const deleteCommentAsync = createAsyncThunk(
+    'feed/deleteComment',
+    async({ commentId, postId }: { commentId: number; postId: number }, thunkApi) => {
+        try{
+            await api.delete(`/comment/${commentId}`);
+            return { commentId, postId };
+
+        } catch(error : any) {
+            return thunkApi.rejectWithValue(
+                error?.response?.data || 'something went wrong'
+            )
+        }
+    }
+)
+
+

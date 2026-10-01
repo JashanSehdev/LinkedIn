@@ -2,6 +2,7 @@
 .options {
   display: flex;
   gap: 0.2rem;
+  align-items: center;
 }
 .bio {
   font-size: 0.55rem;
