@@ -2,6 +2,8 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany,type Rela
 import { Post } from '../../post/entities/post.entity.js';
 import { Like } from '../../like/entities/like.entity.js';
 import { Comment } from '../../comment/entities/comment.entity.js';
+import { Company } from '../../company/entities/company.entity.js';
+import { AppliedJob } from '../../applied-job/entities/applied-job.entity.js';
 
 @Entity({ name: 'user' })
 export class User {
@@ -21,5 +23,11 @@ export class User {
   likes: Like[]
 
   @OneToMany(() => Comment, (comment) => comment.userId)
-  comments : Relation<Comment>
+  comments : Relation<Comment[]>
+
+  @OneToMany(() => Company, (company)=>company.user)
+  companies : Relation<Company[]>
+
+  @OneToMany(() => AppliedJob, (appliedJob) => appliedJob.user)
+  appliedJob : Relation<AppliedJob>[]
 }

@@ -17,7 +17,7 @@ export const fetchAllFeedAsync = createAsyncThunk(
             return response.data
 
         } catch(error : any) {
-            thunkApi.rejectWithValue(
+            return thunkApi.rejectWithValue(
                 error?.response?.data || 'something went wrong'
             )
         }
@@ -32,7 +32,7 @@ export const likeAsync = createAsyncThunk(
             return response.data
 
         } catch(error : any) {
-            thunkApi.rejectWithValue(
+            return thunkApi.rejectWithValue(
                 error?.response?.data || 'something went wrong'
             )
         }
@@ -48,7 +48,7 @@ export const createPostAsync = createAsyncThunk(
             return response.data 
 
         } catch(error : any) {
-            thunkApi.rejectWithValue(
+            return thunkApi.rejectWithValue(
                 error?.response?.data || 'something went wrong'
             )
         }
@@ -64,7 +64,7 @@ export const createCommentAsync = createAsyncThunk(
             return response.data 
 
         } catch(error : any) {
-            thunkApi.rejectWithValue(
+            return thunkApi.rejectWithValue(
                 error?.response?.data || 'something went wrong'
             )
         }
@@ -80,7 +80,7 @@ export const createNestedCommentAsync = createAsyncThunk(
             return response.data 
 
         } catch(error : any) {
-            thunkApi.rejectWithValue(
+            return thunkApi.rejectWithValue(
                 error?.response?.data || 'something went wrong'
             )
         }

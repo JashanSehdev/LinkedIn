@@ -6,7 +6,6 @@ import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
 import { useAppDispatch } from "@/features/store";
 import { createCommentAsync } from "@/features/feed/handle-feed/feed.action";
 
-
 const profilePic = 'https://i.pinimg.com/736x/ce/ad/94/cead941fca1ea8075e01f564f1eedf98.jpg'
 
 type Prop = {

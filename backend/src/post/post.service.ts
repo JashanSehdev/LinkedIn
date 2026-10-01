@@ -44,8 +44,7 @@ export class PostService {
     .createQueryBuilder('post')
     .leftJoinAndSelect('post.likes', 'Like')
     .leftJoinAndSelect('post.comments', 'Comment')
-    .where('Comment.parentId IS NULL') 
-    .leftJoinAndSelect('Comment.childComments', 'reply'); 
+    .where('Comment.parentId IS NULL')
 
   if (filter.search) {
     query.andWhere('post.content ILike :search', {

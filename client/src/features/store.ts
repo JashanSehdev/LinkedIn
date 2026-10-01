@@ -6,6 +6,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from './storage';
 import authReducer from './auth/auth.slice'
 import feedReducer from './feed/feed.slice'
+import jobReducer from './job/job.slice'
 import {
   FLUSH,
   REHYDRATE,
@@ -16,13 +17,14 @@ import {
 } from 'redux-persist';
 const rootReducer = combineReducers({
     auth: authReducer,
-    feed: feedReducer
+    feed: feedReducer,
+    jobs: jobReducer
 });
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist :['auth', 'feed']
+  whitelist :['auth', 'feed', 'jobs']
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

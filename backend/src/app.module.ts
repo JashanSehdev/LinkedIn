@@ -8,8 +8,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { PostModule } from './post/post.module.js';
 import { LikeModule } from './like/like.module.js';
 import { AuthMiddleware } from './middleware/auth.middleware.js';
-import { UsersController } from './users/users.controller.js';
 import { CommentModule } from './comment/comment.module.js';
+import { CompanyModule } from './company/company.module.js';
+import { JobModule } from './job/job.module.js';
+import { AppliedJobModule } from './applied-job/applied-job.module.js';
 
 @Module({
   imports: [
@@ -35,6 +37,9 @@ import { CommentModule } from './comment/comment.module.js';
     PostModule,
     LikeModule,
     CommentModule,
+    CompanyModule,
+    JobModule,
+    AppliedJobModule,
   ],
   controllers: [AppController],
   providers: [AppService],

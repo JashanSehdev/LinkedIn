@@ -3,7 +3,7 @@ import { CreateCommentDto } from './dto/create-comment.dto.js';
 import { UpdateCommentDto } from './dto/update-comment.dto.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment } from './entities/comment.entity.js';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 
 @Injectable()
 export class CommentService {
@@ -44,13 +44,22 @@ export class CommentService {
   }
 
   async getParentComments(postId: number){
-    return await this.commentRepository.find({
-      // where: {
-      //   postId,
-      //   parentId
-      // },
+    const parentComment = await this.commentRepository.find({
+      where : {
+        postId,
+        parentId: IsNull()
+      },
       relations :{
         childComments: true
+      }
+    })
+    return {parentComment, children : parentComment.length}
+  }
+
+  async getChildrenComments(commentId :number) {
+    return await this.commentRepository.find({
+      where : {
+        parentId : commentId
       }
     })
   }

@@ -1,21 +1,20 @@
 "use client";
-import {  IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { CldUploadWidget } from "next-cloudinary";
-import { UseFormSetValue } from "react-hook-form";
+import { FieldPath, FieldValues, UseFormSetValue } from "react-hook-form";
 import { Inputs } from "../create-post/create-post";
-import ImageIcon from '@mui/icons-material/Image';
+import ImageIcon from "@mui/icons-material/Image";
 import EditIcon from "@mui/icons-material/Edit";
 
-type Prop = {
-  readonly setValue: UseFormSetValue<Inputs>;
+type Prop<TFieldValues extends FieldValues> = {
+  readonly setValue: UseFormSetValue<TFieldValues>;
+  readonly fieldName: FieldPath<TFieldValues>;
 };
-export default function CloudinaryUploader({ setValue } : Prop) {
+export default function CloudinaryUploader<TFieldValues extends FieldValues>({ setValue, fieldName }: Prop<TFieldValues>) {
   const handleSuccess = (result) => {
     console.log("Uploaded:", result.info.secure_url);
-    setValue("media", result.info.secure_url, { shouldValidate: true });
+    setValue(fieldName, result.info.secure_url, { shouldValidate: true });
   };
-
-  
 
   return (
     <CldUploadWidget
@@ -23,9 +22,9 @@ export default function CloudinaryUploader({ setValue } : Prop) {
       onSuccess={handleSuccess}
     >
       {({ open }) => (
-        <IconButton type='button' onClick={() => open()} >
-            <ImageIcon />
-          </IconButton>
+        <IconButton type="button" onClick={() => open()}>
+          <ImageIcon />
+        </IconButton>
       )}
     </CldUploadWidget>
   );

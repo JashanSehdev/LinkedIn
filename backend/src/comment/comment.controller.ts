@@ -22,9 +22,21 @@ export class CommentController {
     return this.commentService.findAll();
   }
 
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.commentService.findOne(+id);
+  }
+
+  @Get('post/:id')
+  findPostcomments(@Param('id', ParseIntPipe) postId : number ) {
+    return this.commentService.getParentComments(postId)
+  }
+
+  //this route will return only children
+  @Get('child/:id')
+  findChildren(@Param('id') id : string) {
+    return this.commentService
   }
 
   @Patch(':id')
