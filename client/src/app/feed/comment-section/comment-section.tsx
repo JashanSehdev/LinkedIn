@@ -7,7 +7,6 @@ type Prop =  {
     postId : number
 }
 export default function CommentSection({postId} : Prop) {
-    const [toggleInput, setToggleInput] = useState(false);
 
     return (
         <Box>

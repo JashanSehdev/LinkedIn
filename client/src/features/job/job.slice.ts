@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {  Post } from "@/types/feed";
 import { Company } from "@/types/job";
-import { createCompanyAsync, createJobAsync, fetchCompaniesAsync } from "./handle-job/job.action";
+import { createCompanyAsync, createJobAsync, fetchCompaniesAsync, GetUserCompanyAsync } from "./handle-job/job.action";
 
 
 type InitialState = {
@@ -18,14 +18,13 @@ const jobSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
 
-    // builder.addCase(createCompanyAsync.fulfilled, (state, action : PayloadAction<Company[]>) => {
-    //     state.companies = action.payload
-    // })
+
     builder.addCase(fetchCompaniesAsync.fulfilled, (state, action : PayloadAction<Company[]>) => {
         state.companies= action.payload
     })
-    .addCase(createJobAsync.fulfilled, (state, action ) => {
-
+    
+    .addCase(GetUserCompanyAsync.fulfilled, (state, action : PayloadAction<Company[]>) => {
+      state.companies = action.payload
     })
   }
 });

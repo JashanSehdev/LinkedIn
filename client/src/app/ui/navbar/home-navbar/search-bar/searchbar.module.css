@@ -6,6 +6,7 @@
     width: 250px;
     border: 2px solid black;
     padding: 0.2rem 1rem;
+    position:relative
 }
 
 
@@ -13,4 +14,13 @@
 .input {
     outline: none;
     border: none;
+}
+
+.usersList {
+    position: absolute;
+    top: 40px;
+    max-width: 500px;
+    z-index: 10;
+    width: 100%;
+    right: 5;
 }

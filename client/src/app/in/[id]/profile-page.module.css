@@ -1,0 +1,43 @@
+
+.banner{
+    width: 100% !important;
+    height: 10rem;
+    object-fit: cover;
+    border-radius: 10px 10px 0 0;
+}
+
+.container{
+    margin-top: 4.5rem;
+    border-radius: 10px;
+    max-width: 792 !important;
+    position: relative;
+}
+
+.content {
+    padding:1.5rem;
+    margin-top: -6rem;
+}
+
+.avatar {
+    position: absolute;
+    bottom: 100;
+    left:25;
+    width: 150 !important;
+    height: 150 !important;
+    border:5px solid white;
+}
+
+.username{
+    font-weight: 400 !important;
+}
+
+.button{
+    border-radius: 1rem !important;
+    font-size: smaller !important;
+}
+
+.buttons{
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+}

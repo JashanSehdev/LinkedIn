@@ -11,3 +11,10 @@ type  Job_Description = {
     salary : number,
     experience : string
 }
+
+export type CreateCompany = {
+    company_name :string,
+    category:string,
+    location: string,
+    company_logo : string
+}

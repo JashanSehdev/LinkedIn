@@ -39,21 +39,30 @@ export class PostService {
     return this.postRepository.save(createdPost);
   }
 
-  async findAll(filter: FilterDto) {
+async findAll(filter: FilterDto) {
   const query = this.postRepository
     .createQueryBuilder('post')
-    .leftJoinAndSelect('post.likes', 'Like')
-    .leftJoinAndSelect('post.comments', 'Comment')
-    .where('Comment.parentId IS NULL')
+    .leftJoinAndSelect(
+      'post.comments',
+      'comment',
+      'comment.parentId IS NULL',
+    )
+    .leftJoinAndSelect('post.likes', 'like')
+    .leftJoin('post.user', 'user')
+    .addSelect([
+      'user.id',
+      'user.username',
+      'user.email',
+    ]);
 
   if (filter.search) {
     query.andWhere('post.content ILike :search', {
       search: `%${filter.search}%`,
     });
   }
+
   return await query.getMany();
 }
-
   async findOne(id: number) {
     return await this.postRepository.findOne({
       relations: {

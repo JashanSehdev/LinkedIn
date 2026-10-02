@@ -1,33 +1,58 @@
-'use client'
-import { Avatar, Box,  Divider, Paper } from "@mui/material";
+"use client";
+import {
+  Avatar,
+  Box,
+  Divider,
+  Paper,
+  Popover,
+  Typography,
+} from "@mui/material";
 import styles from "./feed-card.module.css";
 import { postComments } from "@/data/comments";
 import CommentCard from "../comment-section/comments/comments";
-import {  useState } from "react";
+import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/features/store";
-import { fetchAllFeedAsync, likeAsync } from "@/features/feed/handle-feed/feed.action";
+import {
+  fetchAllFeedAsync,
+  likeAsync,
+} from "@/features/feed/handle-feed/feed.action";
 import { Post } from "@/types/feed";
 import CommentSection from "../comment-section/comment-section";
+import LinkedinNews from "@/app/ui/feed/right-section/linkedin-news";
 
 type Like = {
-  id : number,
-  userId : number,
-  postId: number
-}
-
-type Prop = {
-  post: Post; 
+  id: number;
+  userId: number;
+  postId: number;
+  type: number;
 };
 
-const profilePic = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZoUCWyo0v99yE5-EXx56NlHdIsvsnOT0lFvj4CPqtJw&s=10'
+type Prop = {
+  post: Post;
+};
+
+const profilePic =
+  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZoUCWyo0v99yE5-EXx56NlHdIsvsnOT0lFvj4CPqtJw&s=10";
+
+export const reactions = [
+  { type: "LIKE", label: "Like", icon: '👍' },
+  { type: "LOVE", label: "Love", icon: '❤️' },
+  { type: "CELEBRATE", label: "Celebrate", icon: '🎉' },
+  { type: "INSIGHTFUL", label: "Insightful", icon: '💡' },
+  { type: "SUPPORT", label: "Support", icon: '🤝' },
+  { type: "FUNNY", label: "Funny", icon: '😂' },
+];
+
 export default function FeedCard({ post }: Prop) {
-  const dispatch = useAppDispatch()
-  const user = useAppSelector((state) =>state.auth.user)
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
   const [showComments, setShowComments] = useState<boolean>(false);
-  const isLiked = post?.likes?.some((like : Like) => like.userId === user?.id);
-  const handleLike = async() => {
-    await dispatch(likeAsync(post.id))
-  }
+  const like = post?.likes?.find((item) => item.userId === user?.id)
+  const handleLike = async () => {
+    await dispatch(likeAsync({ id: post.id, type: 1 }));
+  };
+
+  const [showReactions, setShowReactions] = useState(false);
 
   return (
     <Paper className={styles.container}>
@@ -37,7 +62,7 @@ export default function FeedCard({ post }: Prop) {
         </Box>
         <Box className={styles.author_data}>
           <Box className={styles.menubar}>
-            <p className={styles.username}>{post?.author}</p>
+            <p className={styles.username}>{post?.user?.username}</p>
             <button className={styles.follow_button}> + Follow</button>
           </Box>
           {/* <p className={styles.bio}>{post.author.headline}</p> */}
@@ -48,36 +73,102 @@ export default function FeedCard({ post }: Prop) {
         <p className={styles.description}>{post?.content}</p>
       </Box>
       <Box className={styles.images}>
-        {
-          post?.media && <Box className={styles.image} component={"img"} src={post?.media} />
-        }
-        
+        {post?.media && (
+          <Box className={styles.image} component={"img"} src={post?.media} />
+        )}
       </Box>
       <Box className={styles.like_section}>
-        <p>{post?.likes?.length} likes</p>
+        <Box>
+          {post?.likes?.some((item)=> item.type === 1) &&
+            <Typography variant="caption">👍</Typography>}
+          {post?.likes?.some((item)=> item.type === 2) &&
+          <Typography variant="caption">❤️</Typography>}
+          {post?.likes?.some((item)=> item.type === 3) &&
+          <Typography variant="caption">🎉</Typography>}
+          {post?.likes?.some((item)=> item.type === 4) &&
+          <Typography variant="caption">💡</Typography>}
+          {post?.likes?.some((item)=> item.type === 5) &&
+          <Typography variant="caption">🤝</Typography>}
+          {post?.likes?.some((item)=> item.type === 6) &&
+          <Typography variant="caption">😂</Typography>}
+          <Typography sx={{marginLeft:'0.2rem', display:'inline'}}>{post?.likes?.length}</Typography>
+        </Box>
+        
         <Box>
           {/* {post.comments.length > 0 && <p>{post.comments.length} comments</p>} */}
         </Box>
       </Box>
       <Divider />
       <Box className={styles.buttons}>
-        <Box className={styles.button} onClick={handleLike}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            id="thumbs-up-outline-small"
-            fill={isLiked ? "red" : ""}
-            aria-hidden="true"
-            data-supported-dps="16x16"
-            viewBox="0 0 16 16"
-            data-token-id="289"
-            width="16"
-            height="16"
-          >
-            <path d="m12.91 7-2.25-2.57a8.2 8.2 0 0 1-1.5-2.55L9 1.37A2.08 2.08 0 0 0 7 0a2.08 2.08 0 0 0-2.06 2.08v1.17a5.8 5.8 0 0 0 .31 1.89l.28.86H2.38A1.47 1.47 0 0 0 1 7.47a1.45 1.45 0 0 0 .64 1.21 1.48 1.48 0 0 0-.37 2.06 1.54 1.54 0 0 0 .62.51h.05a1.6 1.6 0 0 0-.19.71A1.47 1.47 0 0 0 3 13.42v.1A1.46 1.46 0 0 0 4.4 15h4.83a5.6 5.6 0 0 0 2.48-.58l1-.42H14V7zM12 12.11l-1.19.52a3.6 3.6 0 0 1-1.58.37H5.1a.55.55 0 0 1-.53-.4l-.14-.48-.49-.21a.56.56 0 0 1-.34-.6l.09-.56-.42-.42a.56.56 0 0 1-.09-.68L3.55 9l-.4-.61A.28.28 0 0 1 3.3 8h5L7.14 4.51a4.2 4.2 0 0 1-.2-1.26V2.08A.09.09 0 0 1 7 2a.1.1 0 0 1 .08 0l.18.51a10 10 0 0 0 1.9 3.24l2.84 3z"></path>
-          </svg>
-          <span>Like</span>
+        <Box
+          className={styles.likeWrapper}
+          onMouseEnter={() => setShowReactions(true)}
+          onMouseLeave={() => setShowReactions(false)}
+        >
+          {showReactions && (
+            <Box className={styles.reactionPicker}>
+              <Box
+                className={styles.reaction}
+                onClick={() => dispatch(likeAsync({ id: post.id, type: 1 }))}
+              >
+                👍
+              </Box>
+
+              <Box
+                className={styles.reaction}
+                onClick={() => dispatch(likeAsync({ id: post.id, type: 2 }))}
+              >
+                ❤️
+              </Box>
+
+              <Box
+                className={styles.reaction}
+                onClick={() => dispatch(likeAsync({ id: post.id, type: 3 }))}
+              >
+                🎉
+              </Box>
+
+              <Box
+                className={styles.reaction}
+                onClick={() => dispatch(likeAsync({ id: post.id, type: 4 }))}
+              >
+                💡
+              </Box>
+
+              <Box
+                className={styles.reaction}
+                onClick={() => dispatch(likeAsync({ id: post.id, type: 5 }))}
+              >
+                🤝
+              </Box>
+
+              <Box
+                className={styles.reaction}
+                onClick={() => dispatch(likeAsync({ id: post.id, type: 6 }))}
+              >
+                😂
+              </Box>
+            </Box>
+          )}
+
+          <Box className={styles.button} onClick={handleLike}>
+              { !like ?
+              (<svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill={"currentColor"}
+              viewBox="0 0 16 16"
+              width="16"
+              height="16"
+            >
+              <path d="m12.91 7-2.25-2.57a8.2 8.2 0 0 1-1.5-2.55L9 1.37A2.08 2.08 0 0 0 7 0a2.08 2.08 0 0 0-2.06 2.08v1.17a5.8 5.8 0 0 0 .31 1.89l.28.86H2.38A1.47 1.47 0 0 0 1 7.47a1.45 1.45 0 0 0 .64 1.21 1.48 1.48 0 0 0-.37 2.06 1.54 1.54 0 0 0 .62.51h.05a1.6 1.6 0 0 0-.19.71A1.47 1.47 0 0 0 3 13.42v.1A1.46 1.46 0 0 0 4.4 15h4.83a5.6 5.6 0 0 0 2.48-.58l1-.42H14V7zM12 12.11l-1.19.52a3.6 3.6 0 0 1-1.58.37H5.1a.55.55 0 0 1-.53-.4l-.14-.48-.49-.21a.56.56 0 0 1-.34-.6l.09-.56-.42-.42a.56.56 0 0 1-.09-.68L3.55 9l-.4-.61A.28.28 0 0 1 3.3 8h5L7.14 4.51a4.2 4.2 0 0 1-.2-1.26V2.08A.09.09 0 0 1 7 2a.1.1 0 0 1 .08 0l.18.51a10 10 0 0 0 1.9 3.24l2.84 3z" />
+            </svg>)
+            : reactions[like.type - 1].icon
+            }
+
+            <span>{reactions[((like?.type)  ?? 1) -1].label ?? 'Like'}</span>
+          </Box>
         </Box>
-        <Box className={styles.button} onClick={()=> setShowComments(true)}>
+        <Box className={styles.button} onClick={() => setShowComments(true)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             id="comment-small"
@@ -130,22 +221,17 @@ export default function FeedCard({ post }: Prop) {
           <span>Send</span>
         </Box>
       </Box>
-      {
-        showComments && <Divider/>
-      }
-      
-      {
-        showComments && (
-          <Box className={styles.commentSection}>
-            <CommentSection postId={post.id} />
-        {post.comments.map((comment) => (
-          // <CommentItem key={comment.id} comment={comment} />
-          <CommentCard key={comment.id} comment={comment}/>
-        ))}
-      </Box>
-        )
-      }
-      
+      {showComments && <Divider />}
+
+      {showComments && (
+        <Box className={styles.commentSection}>
+          <CommentSection postId={post.id} />
+          {post.comments.map((comment) => (
+            // <CommentItem key={comment.id} comment={comment} />
+            <CommentCard key={comment.id} comment={comment} />
+          ))}
+        </Box>
+      )}
     </Paper>
   );
 }

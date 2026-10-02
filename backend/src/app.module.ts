@@ -12,6 +12,7 @@ import { CommentModule } from './comment/comment.module.js';
 import { CompanyModule } from './company/company.module.js';
 import { JobModule } from './job/job.module.js';
 import { AppliedJobModule } from './applied-job/applied-job.module.js';
+import { FollowModule } from './follow/follow.module.js';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { AppliedJobModule } from './applied-job/applied-job.module.js';
     CompanyModule,
     JobModule,
     AppliedJobModule,
+    FollowModule,
   ],
   controllers: [AppController],
   providers: [AppService],

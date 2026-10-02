@@ -1,0 +1,11 @@
+.input {
+    margin-bottom: 1rem !important;
+}
+
+.heading{
+    margin-bottom: 1rem;
+}
+
+.image{
+    object-fit: cover !important;
+}

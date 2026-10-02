@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -42,7 +42,7 @@ export default function CreatePostModal() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
@@ -91,7 +91,7 @@ export default function CreatePostModal() {
               <FormHelperText error>{errors.content.message}</FormHelperText>
             )}
             <Divider />
-            <CloudinaryUploader setValue={setValue} />
+            <CloudinaryUploader setValue={setValue} fieldName="media" />
             <Box>
               <Box></Box>
               <Button variant="contained" type="submit">

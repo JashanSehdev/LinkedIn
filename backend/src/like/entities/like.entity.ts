@@ -9,7 +9,7 @@ export class Like {
   @PrimaryGeneratedColumn()
   id : number
 
-  @ManyToOne(() => User, (user) => user.likes)
+  @ManyToOne(() => User, (user) => user.likes, {onDelete: 'CASCADE'})
   @JoinColumn({ name: 'userId' })
   user: Relation<User>;
 
@@ -19,7 +19,10 @@ export class Like {
   @Column({type: 'integer'})
   postId: number;
 
-  @ManyToOne(() => Post, (post) => post.likes)
+  @Column({type : 'integer'})
+  type: number
+
+  @ManyToOne(() => Post, (post) => post.likes, {onDelete: 'CASCADE'})
   @JoinColumn({ name: 'postId' })
   post: Relation<Post>;
 }

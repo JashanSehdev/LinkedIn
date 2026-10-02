@@ -1,5 +1,5 @@
 import { api } from "@/app/api/api";
-import { CreateCompany } from "@/app/ui/Jobs/create-company-modal/create-company-type";
+import { CreateCompany } from "./job.type";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { CreateJob } from "./job.type";
 
@@ -31,6 +31,24 @@ export const createJobAsync = createAsyncThunk(
   async (data: CreateJob, thunkApi) => {
     try {
       const response = await api.post("jobs", data);
+
+      console.log("Job Created");
+      return response.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.response?.data || "something went wrong");
+    }
+  },
+);
+
+export const GetUserCompanyAsync = createAsyncThunk(
+  "job/get-user-company",
+  async (_, thunkApi) => {
+    try {
+      const response = await api.get("/companies", {
+        params: {
+          created_by_user: "true"
+        }
+      });
 
       console.log("Job Created");
       return response.data;

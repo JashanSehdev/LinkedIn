@@ -6,6 +6,7 @@ import {
   Param,
   Res,
   Req,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service.js';
 import { CreateUserDto } from './dto/create-user.dto.js';
@@ -13,6 +14,7 @@ import { CreateUserDto } from './dto/create-user.dto.js';
 import type  {   Request,  Response } from 'express';
 import { LoginUserDto } from './dto/login-user-dtp.js';
 import { GoogleAuthDto } from './dto/google-auth.dto.js';
+import { QueryDto } from './dto/query.dto.js';
 
 
 @Controller('auth')
@@ -70,5 +72,15 @@ export class UsersController {
       res.clearCookie('access_token');
 
       return ({message: "User successfully logout"})
+  }
+
+  @Get("users")
+  async getAllByName (@Query() query : QueryDto) {
+    return this.usersService.findAllByName(query)
+  }
+
+  @Get('users/:id')
+  async getUser(@Param('id') id : number){
+    return await this.usersService.findOne(+id)
   }
 }

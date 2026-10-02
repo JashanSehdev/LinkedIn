@@ -9,6 +9,7 @@ import {
   likeAsync,
 } from "./handle-feed/feed.action";
 import { Like } from "./handle-feed/feed.type";
+import { Replace } from "lucide-react";
 
 type InitialState = {
   feeds: Post[];
@@ -37,13 +38,19 @@ const feedSlice = createSlice({
 
         const post = state.feeds.find((feed) => feed.id === like.postId);
 
-        if (!post) return;
-        if (like.isDeleted) {
-          post.likes = post.likes.filter((item) => like.id !== item.id);
-        } else {
-          const { isDeleted, ...liked } = like;
-          post.likes.push(liked);
+        if(!post) return
+        if (like.status === "deleted") {
+          post.likes = post.likes.filter((item) => item.id !== like.id);
+          return;
         }
+
+        if (like.status === "replaced") {
+          post.likes = post.likes.filter((item) => item.userId !== like.userId);
+        }
+
+        const { status, ...liked } = like;
+
+        post.likes.push(liked);
       })
 
       .addCase(
@@ -59,7 +66,10 @@ const feedSlice = createSlice({
 
       .addCase(
         deleteCommentAsync.fulfilled,
-        (state, action: PayloadAction<{ commentId: number; postId: number }>) => {
+        (
+          state,
+          action: PayloadAction<{ commentId: number; postId: number }>,
+        ) => {
           const { commentId, postId } = action.payload;
           const post = state.feeds.find((feed) => feed.id === postId);
           if (!post) return;
@@ -78,31 +88,29 @@ const feedSlice = createSlice({
 
           post.comments = removeComment(post.comments);
         },
-      )
-      
-      // .addCase(
-      //   deleteCommentAsync.fulfilled,
-      //   (state, action: PayloadAction<{ commentId: number; postId: number, parentId : number }>) => {
-      //     const { commentId, postId, parentId } = action.payload;
-      //     const post = state.feeds.find((feed) => feed.id === postId);
-      //     if (!post) return;
+      );
 
-          // const addNestedComment = (comments: Comment[]): Comment[] => {
-          //   const parentComment = post.comments.find((item) => item.id === parentId)
-          //   ?.map((comment) =>
-          //       comment.childComments
-          //         ? {
-          //             ...comment,
-          //             childComments: removeComment(comment.childComments),
-          //           }
-          //         : comment,
-          //     )
-          // }
-            
+    // .addCase(
+    //   deleteCommentAsync.fulfilled,
+    //   (state, action: PayloadAction<{ commentId: number; postId: number, parentId : number }>) => {
+    //     const { commentId, postId, parentId } = action.payload;
+    //     const post = state.feeds.find((feed) => feed.id === postId);
+    //     if (!post) return;
 
-          
-      //   // },
-      // )
+    // const addNestedComment = (comments: Comment[]): Comment[] => {
+    //   const parentComment = post.comments.find((item) => item.id === parentId)
+    //   ?.map((comment) =>
+    //       comment.childComments
+    //         ? {
+    //             ...comment,
+    //             childComments: removeComment(comment.childComments),
+    //           }
+    //         : comment,
+    //     )
+    // }
+
+    //   // },
+    // )
   },
 });
 

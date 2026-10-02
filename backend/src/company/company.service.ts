@@ -1,15 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto.js';
 import { UpdateCompanyDto } from './dto/update-company.dto.js';
 import { Repository } from 'typeorm';
 import { Company } from './entities/company.entity.js';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FilterDto } from './dto/filter.dto.js';
+import { UsersService } from '../users/users.service.js';
 
 @Injectable()
 export class CompanyService {
   constructor(
     @InjectRepository(Company)
-    private readonly companyRepository : Repository<Company>
+    private readonly companyRepository : Repository<Company>,
+    private readonly usersService : UsersService
   ){}
   async create(createCompanyDto: CreateCompanyDto, userId : number) {
     const company = this.companyRepository.create({...createCompanyDto, userId})
@@ -17,7 +20,19 @@ export class CompanyService {
     return await this.companyRepository.save(company)
   }
 
-  async findAll() {
+  async findAll(filter: FilterDto, userId : number) {
+    
+    if(filter.created_by_user === "true") {
+      const user = this.usersService.findOne(userId);
+      if(!user) throw new NotFoundException('User not found')
+
+      return this.companyRepository.find({
+        where: {
+          userId
+        },
+      })
+    }
+    
     return await this.companyRepository.find({
       relations:{
         jobs:true

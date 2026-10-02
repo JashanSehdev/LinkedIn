@@ -28,6 +28,7 @@ import { redirect } from "next/navigation";
 
 
 const signupSchema = z.object({
+  username : z.string().min(1, 'username required'),
   email : z.email({message:'Invalid email'}),
   password : z.string().min(6, 'password should not be less than 6 letters').max(12, 'password should be less than 12 letters')
 })
@@ -55,6 +56,16 @@ export default function SignupCard() {
   return (
     <Paper className={styles.container}>
       <form onSubmit={handleSubmit(onSubmit)}>
+
+        <Box>
+          <p className={styles.label}>Username</p>
+            <Box className={styles.inputField}>
+            <input type="text" 
+              {...register("username")}
+            />
+            {errors.username && <FormHelperText error>{errors.username.message}</FormHelperText>}
+          </Box>
+        </Box>
         <Box>
           <p className={styles.label}>Email or Phone number</p>
           <Box className={styles.inputField}>

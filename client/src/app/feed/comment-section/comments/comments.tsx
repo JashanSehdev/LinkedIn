@@ -84,7 +84,6 @@ export default function CommentCard(prop: Prop) {
       </Box>
           )
           
-          // <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Enter Your Comment Here" onKeyDown={handleAddComment}/>
         }
         <Box>{comment.childComments?.map((reply) => <CommentCard key={reply.id} comment={reply}/>)}</Box>
       </Box>

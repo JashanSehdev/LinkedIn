@@ -15,6 +15,8 @@ import { LoginUserDto } from './dto/login-user-dtp.js';
 import { NotFoundError } from 'rxjs';
 import { Request } from 'express';
 import { GoogleAuthDto } from './dto/google-auth.dto.js';
+import { QueryBuilder } from 'typeorm/browser';
+import { QueryDto } from './dto/query.dto.js';
 
 @Injectable()
 export class UsersService {
@@ -23,16 +25,20 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
+
   async create(
     createUserDto: CreateUserDto,
   ): Promise<{ access_token: string | null }> {
-    const fetchedUser = await this.userRepository.findOne({
-      where: {
-        email: createUserDto.email,
-      },
+    const fetchedUser = await this.userRepository.findOneBy({
+      email: createUserDto.email,
     });
 
-    if (fetchedUser) throw new ConflictException('User already exist');
+    if (fetchedUser)
+      throw new ConflictException({
+        code: 'USER_ALREADY_EXIST',
+        message: 'user already exist',
+      });
+      
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
     const user = this.userRepository.create({
       ...createUserDto,
@@ -72,7 +78,7 @@ export class UsersService {
     }
   }
 
-  async verifyMe(req: Request): Promise<{ message: string; user: any }> {
+  async verifyMe(req: Request): Promise<{username : string, id : number, email : string}> {
     const token = req.cookies?.access_token;
 
     if (!token) {
@@ -80,37 +86,51 @@ export class UsersService {
     }
     try {
       const payload = await this.jwtService.verifyAsync(token);
-      return  payload
+      const user = await this.findOne(payload.id)
+      if(!user) throw new NotFoundException({code : "USER_NOT_FOUND", message : 'user not found '})
+      return {id : user.id, username : user.username, email : user.email};
     } catch (error) {
       throw new UnauthorizedException('Session expired or invalid token');
     }
   }
 
-  async googleAuth (googleAuthDto : GoogleAuthDto) : Promise<{ access_token: string | null }> {
+  async googleAuth(
+    googleAuthDto: GoogleAuthDto,
+  ): Promise<{ access_token: string | null }> {
     const fetchedUser = await this.userRepository.findOne({
       where: {
         email: googleAuthDto.email,
       },
     });
-    let payload = {}
+    let payload = {};
     if (fetchedUser) {
-      payload = {id : fetchedUser.id, email : fetchedUser.email}
+      payload = { id: fetchedUser.id, email: fetchedUser.email };
     } else {
-      const createdUser = this.userRepository.create({...googleAuthDto, password : 'Google Auth'});
+      const createdUser = this.userRepository.create({
+        ...googleAuthDto,
+        password: 'Google Auth',
+      });
       const user = await this.userRepository.save(createdUser);
-      payload = {id : user.id, email : user.email}
+      payload = { id: user.id, email: user.email };
     }
     return {
-      access_token : await this.jwtService.signAsync(payload)
-    }
-
+      access_token: await this.jwtService.signAsync(payload),
+    };
   }
 
   async findOne(id: number) {
-    return await this.userRepository.findOne({where:{id}});
+    return this.userRepository.findOneBy({ id });
   }
 
+  async findAllByName(filter: QueryDto) {
+    const query = this.userRepository.createQueryBuilder('user');
 
+    if (filter.username) {
+      query.where('user.username ILIKE :username', {
+        username: `%${filter.username}%`,
+      });
+    }
 
-
+    return await query.getMany();
+  }
 }

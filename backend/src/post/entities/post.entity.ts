@@ -21,14 +21,11 @@ export class Post {
   @Column({ type: 'varchar', nullable:true })
   media: string;
 
-  @ManyToOne(() => User, (user) => user.posts)
+  @ManyToOne(() => User, (user) => user.posts, {onDelete: 'CASCADE'})
   user: Relation<User>;
 
-  @OneToMany(() => Like, (like) => like.post)
+  @OneToMany(() => Like, (like) => like.post, {cascade:true})
   likes: Like[];
-
-  @Column({type: 'varchar', default:'Unknown'})
-  author: string
 
   @Column({type: 'integer', default:0})
   shared: number

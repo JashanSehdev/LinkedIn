@@ -1,3 +1,9 @@
+import { type LucideProps } from 'lucide-react';
+import { Camera } from 'lucide-react';
+import { Heart, Lightbulb, PartyPopper, ThumbsUp, Laugh, HelpingHand } from "lucide-react";
+
+
+
 // export interface User {
 //   id: number;
 //   name: string;
@@ -7,15 +13,6 @@
 //   location?: string;
 // }
 
-// export interface Comment {
-//   id: number;
-//   author: User;
-//   text: string;
-//   createdAt: string;
-//   likes: number;
-//   isLiked: boolean;
-//   replies: Comment[];
-// }
 
 // export interface Reactions {
 //   likes: number;
@@ -61,11 +58,17 @@ export type Post = {
   content: string,
   media ?: null | string,
   likes : Like[],
-  author : string,
+  user : User,
   shared: number,
   hashTags: string[]
   comments: Comment[]
 }
+
+export type  User = {
+  username : string,
+  email: string
+}
+
 
 
 export type Comment = {
@@ -80,5 +83,7 @@ export type Comment = {
 export type Like =  {
   id : number,
   userId : number,
-  postId : number
+  postId : number,
+  type: number
 }
+

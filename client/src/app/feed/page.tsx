@@ -9,7 +9,7 @@ import LinkedinNews from "../ui/feed/right-section/linkedin-news";
 import { useAppDispatch, useAppSelector } from "@/features/store";
 import { useEffect } from "react";
 import { fetchAllFeedAsync } from "@/features/feed/handle-feed/feed.action";
-import CreatePostModal from "../ui/create-post/create-post";
+import CreatePostModal from "../ui/post-job/create-post";
 
 export default function Feed() {
   const feeds = useAppSelector((state) => state.feed.feeds);

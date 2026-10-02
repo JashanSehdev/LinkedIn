@@ -16,27 +16,48 @@ export class LikeService {
     private readonly userService : UsersService,
     
   ){}
-  async create(postId : number, userId : number) {
+  async create(postId : number, userId : number, type: number) {
     const post = await this.postService.findOne(postId);
     if (!post) throw new NotFoundException('post not found');
     const user = await this.userService.findOne(userId);
-    console.log("user from likes", user)
     if (!user) throw new NotFoundException('user not found');
 
     const staleLike = await this.findUserLike(postId, userId)
     
 
     if (staleLike) {
-      const deletedLike = await this.remove(staleLike.id);
-      return {...deletedLike, isDeleted : true}
+      await this.remove(staleLike.id)
+      if (staleLike.type !== type) {
+        const createdLike = await this.createLike({userId, postId, type});
+        return {...createdLike, status : "replaced"}
+      }
+
+      return {...staleLike, status:"deleted"}
     }
     const like = this.likeRepository.create({
       postId : post.id,
-      userId : user.id
+      userId : user.id,
+      type
     })
 
     const savedLike = await this.likeRepository.save(like)
-    return {...savedLike, isDelete: false}
+    return {...savedLike, status: "created"}
+  }
+
+  async createLike ({postId, userId, type}
+    : {
+      postId :number,
+      userId : number,
+      type : number
+    }
+  ){ 
+     const like = this.likeRepository.create({
+      postId,
+      userId,
+      type
+    })
+    return  await this.likeRepository.save(like)
+
   }
 
   findAll() {
@@ -65,8 +86,8 @@ export class LikeService {
   async remove(id: number) {
     const like = await this.findLikeById(id);
     if (like) {
-      await this.likeRepository.delete(like);
-      return like
+      return await this.likeRepository.remove(like);
+ 
     }
   }
 }

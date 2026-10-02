@@ -1,13 +1,15 @@
 import { User } from "@/types/user";
-import { createSlice } from "@reduxjs/toolkit";
-import { getUserAsync, loginUserAsync, signupUserAsync } from "./handle-auth/auth.action";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { fetchUserByNameAsync, getUserAsync, loginUserAsync, signupUserAsync } from "./handle-auth/auth.action";
 
 type InitialState = {
-    user: User | null
+    user: User | null;
+    users: User[]
 }
 
 const initialState : InitialState = {
-    user : null
+    user : null,
+    users: []
 }
 
 const authSlice = createSlice({
@@ -23,8 +25,13 @@ const authSlice = createSlice({
             state.user = action.payload
         })
 
-         builder.addCase(getUserAsync.fulfilled, (state, action) => {
+        .addCase(getUserAsync.fulfilled, (state, action) => {
             state.user = action.payload
+        })
+
+        .addCase(fetchUserByNameAsync.fulfilled,  (state, action ) => {
+            if (!action.payload) return;
+            state.users = action.payload
         })
     }
 }) 

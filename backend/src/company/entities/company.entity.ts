@@ -24,7 +24,7 @@ export class Company {
     @Column({type : 'varchar', nullable:false, default: "Unknown"})
     location: string
 
-    @ManyToOne(() => User, (user) => user.companies, {cascade:true})
+    @ManyToOne(() => User, (user) => user.companies, {onDelete : 'CASCADE'})
     @JoinColumn({name : 'userId'})
     user: Relation<User>
 

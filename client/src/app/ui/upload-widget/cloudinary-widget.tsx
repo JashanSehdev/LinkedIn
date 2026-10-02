@@ -2,7 +2,7 @@
 import { IconButton } from "@mui/material";
 import { CldUploadWidget } from "next-cloudinary";
 import { FieldPath, FieldValues, UseFormSetValue } from "react-hook-form";
-import { Inputs } from "../create-post/create-post";
+import { Inputs } from "../post-job/create-post";
 import ImageIcon from "@mui/icons-material/Image";
 import EditIcon from "@mui/icons-material/Edit";
 
