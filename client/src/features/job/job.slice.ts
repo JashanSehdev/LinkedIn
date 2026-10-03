@@ -1,8 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {  Post } from "@/types/feed";
+import { fetchCompaniesAsync, GetUserCompanyAsync } from "./handle-job/job.action";
 import { Company } from "@/types/job";
-import { createCompanyAsync, createJobAsync, fetchCompaniesAsync, GetUserCompanyAsync } from "./handle-job/job.action";
-
 
 type InitialState = {
   companies : Company[];

@@ -17,6 +17,15 @@ export class FollowController {
   async creatOrRemove(@Body() createFollowDto: CreateFollowDto , @Req() req : Request & {user : any}) {
     return await this.followService.toggle(createFollowDto, req.user.id)
   }
+  @Get('followers')
+  getFollowers( @Req() req : Request & {user : any}) {
+    return  this.followService.findFollowers(+req.user.id)
+  }
+
+  @Get('followings')
+  getFollowings( @Req() req : Request & {user : any}) {
+    return  this.followService.findFollowing(req.user.id)
+  }
 
   @Get()
   findAll() {
@@ -27,6 +36,8 @@ export class FollowController {
   findOne(@Param('id') id: string) {
     return this.followService.findOne(+id);
   }
+
+  
 
   @Delete(':id')
   remove(@Param('id') id: string) {

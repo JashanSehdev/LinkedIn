@@ -17,6 +17,7 @@ import { Request } from 'express';
 import { GoogleAuthDto } from './dto/google-auth.dto.js';
 import { QueryBuilder } from 'typeorm/browser';
 import { QueryDto } from './dto/query.dto.js';
+import { Follow } from '../follow/entities/follow.entity.js';
 
 @Injectable()
 export class UsersService {
@@ -78,7 +79,7 @@ export class UsersService {
     }
   }
 
-  async verifyMe(req: Request): Promise<{username : string, id : number, email : string}> {
+  async verifyMe(req: Request): Promise<{username : string, id : number, email : string, followings: Follow[]}> {
     const token = req.cookies?.access_token;
 
     if (!token) {
@@ -88,7 +89,7 @@ export class UsersService {
       const payload = await this.jwtService.verifyAsync(token);
       const user = await this.findOne(payload.id)
       if(!user) throw new NotFoundException({code : "USER_NOT_FOUND", message : 'user not found '})
-      return {id : user.id, username : user.username, email : user.email};
+      return {id : user.id, username : user.username, email : user.email, followings: user.followings};
     } catch (error) {
       throw new UnauthorizedException('Session expired or invalid token');
     }
@@ -119,7 +120,11 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    return this.userRepository.findOneBy({ id });
+    return this.userRepository.findOne({where : {
+      id
+    }, relations: {
+      followings: true
+    } });
   }
 
   async findAllByName(filter: QueryDto) {

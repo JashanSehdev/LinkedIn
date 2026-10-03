@@ -7,6 +7,7 @@ import storage from './storage';
 import authReducer from './auth/auth.slice'
 import feedReducer from './feed/feed.slice'
 import jobReducer from './job/job.slice'
+import followReducer from './follow/follow.slice'
 import {
   FLUSH,
   REHYDRATE,
@@ -18,13 +19,14 @@ import {
 const rootReducer = combineReducers({
     auth: authReducer,
     feed: feedReducer,
-    jobs: jobReducer
+    jobs: jobReducer,
+    follow : followReducer
 });
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist :['auth', 'feed', 'jobs']
+  whitelist :['auth', 'feed', 'jobs', 'follow']
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

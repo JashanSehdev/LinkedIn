@@ -50,15 +50,24 @@
 .follow_button{
     font-size: 0.8rem !important;
     font-weight: bolder !important;
-    width: 5rem;
+    width: fit-content;
     padding: 0 0.2rem !important;
     color: #0a66c2;
     outline: none;
     background-color:transparent;
     border: none;
     align-self: flex-start;
-    padding: 0 0.2rem;
-    width: 6rem;
+    padding: 0 0.2rem !important;
+}
+.following_button{
+    font-size: 0.8rem !important;
+    font-weight: bolder !important;
+    color: black !important;
+    width: fit-content;
+    background-color:transparent;
+    border: none;
+    align-self: flex-start;
+    padding: 0 0.2rem !important;
 }
 
 .menubar{

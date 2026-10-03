@@ -2,6 +2,7 @@
 import {
   Avatar,
   Box,
+  Button,
   Divider,
   Paper,
   Popover,
@@ -19,6 +20,8 @@ import {
 import { Post } from "@/types/feed";
 import CommentSection from "../comment-section/comment-section";
 import LinkedinNews from "@/app/ui/feed/right-section/linkedin-news";
+import { toggleFollow } from "@/features/follow/handle-follow/follow.action";
+import { ClockFading } from "lucide-react";
 
 type Like = {
   id: number;
@@ -44,13 +47,23 @@ export const reactions = [
 ];
 
 export default function FeedCard({ post }: Prop) {
+  const [followLoading, setFollowLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
+  const followings = useAppSelector((state) => state.follow.Followings);
   const [showComments, setShowComments] = useState<boolean>(false);
   const like = post?.likes?.find((item) => item.userId === user?.id)
   const handleLike = async () => {
     await dispatch(likeAsync({ id: post.id, type: 1 }));
   };
+
+  const doesFollow =  followings?.some((item) => item.followerId === user?.id)
+
+  const handleFollow = async() => {
+    setFollowLoading(true)
+    await dispatch(toggleFollow(post.user.id))
+    setFollowLoading(false)
+  }
 
   const [showReactions, setShowReactions] = useState(false);
 
@@ -63,7 +76,11 @@ export default function FeedCard({ post }: Prop) {
         <Box className={styles.author_data}>
           <Box className={styles.menubar}>
             <p className={styles.username}>{post?.user?.username}</p>
-            <button className={styles.follow_button}> + Follow</button>
+            { post.user.id !== user?.id &&(
+              doesFollow ? <Button className={styles.following_button} loading={followLoading} onClick={handleFollow}> + Following</Button>
+              : <button className={styles.follow_button} onClick={handleFollow}> + Follow</button>)
+            }
+            
           </Box>
           {/* <p className={styles.bio}>{post.author.headline}</p> */}
           <p className={styles.post_date}>1d</p>

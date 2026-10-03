@@ -5,10 +5,11 @@ import styles from "./profile-page.module.css";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import SendIcon from "@mui/icons-material/Send";
 import { useEffect, useState } from "react";
-import { useAppDispatch } from "@/features/store";
+import { useAppDispatch, useAppSelector } from "@/features/store";
 import { fetchUserProfile } from "@/features/auth/handle-auth/auth.action";
 import { useParams } from "next/navigation";
 import { User } from "@/types/feed";
+import { toggleFollow } from "@/features/follow/handle-follow/follow.action";
 
 const bannerImage =
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSB1_fCjUUdNS8MTH-VRbE0NULU2-zcuoi_shpkxGr_A236WAtbfXCvxcQ&s=10";
@@ -17,12 +18,26 @@ type Prop = {
   params: Promise<{ id: number }>;
 };
 export default function ProfilePage() {
+  const [followLoading, setFollowLoading] = useState<boolean>(false);
+  const [user, setUser] = useState<User | null>(null);
   const params = useParams<{ id: string }>();
+  const currentUser = useAppSelector((state) => state.auth.user)
+  const followings = useAppSelector((state) => state.follow.Followings)
   const {id} = params;
   const dispatch = useAppDispatch();
-  console.log(id);
+  const doesFollow =  followings?.some((item) => item.followedId === user?.id)
+
+
   
-  const [user, setUser] = useState<User | null>(null);
+  const handleFollow = async() => {
+      setFollowLoading(true)
+      if(!user) {
+        console.error('user not found')
+        return
+      }
+      await dispatch(toggleFollow(user?.id))
+      setFollowLoading(false)
+    }
 
 useEffect(() => {
   const loadProfile = async () => {
@@ -66,9 +81,16 @@ useEffect(() => {
                 58,290 followers · 500+ connections
               </Typography>
               <Box className={styles.buttons}>
-                <Button className={styles.button} variant="contained">
+                { currentUser?.id !== user?.id && (
+                  doesFollow ? <Button className={styles.button} variant="outlined" onClick={handleFollow}>
+                  Following
+                </Button> : <Button className={styles.button} variant="contained" onClick={handleFollow}>
                   Follow
                 </Button>
+                )
+
+                }
+                
 
                 <Button className={styles.button} variant="outlined">
                   <SendIcon /> Message

@@ -93,6 +93,8 @@ export class FollowService {
   }
 
   async findFollowers(id: number) {
+    if (!id) throw new UnauthorizedException('User not found')
+      console.log("recieved user id",id)
     return await this.followRepository.findBy({ followedId: id });
   }
 
@@ -124,7 +126,7 @@ export class FollowService {
       ...follow,
       id : follow.id
     }
-    const result = await this.followRepository.remove(follow);
+    await this.followRepository.remove(follow);
 
 
     return removedValue;

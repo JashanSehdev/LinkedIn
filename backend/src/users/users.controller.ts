@@ -62,9 +62,8 @@ export class UsersController {
 
   @Get('me')
   async getMe (@Req() req : Request){
-    const user = await this.usersService.verifyMe(req);
-    
-    return user;
+    return  await this.usersService.verifyMe(req);
+
   }
 
   @Get("logout")

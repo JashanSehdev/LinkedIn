@@ -10,13 +10,21 @@ import { useAppDispatch, useAppSelector } from "@/features/store";
 import { useEffect } from "react";
 import { fetchAllFeedAsync } from "@/features/feed/handle-feed/feed.action";
 import CreatePostModal from "../ui/post-job/create-post";
+import { fetchFollowings } from "@/features/follow/handle-follow/follow.action";
 
 export default function Feed() {
   const feeds = useAppSelector((state) => state.feed.feeds);
+  const following = useAppSelector((state)=> state.follow.Followings)
   const dispatch = useAppDispatch()
   useEffect(() => {
-    dispatch(fetchAllFeedAsync())
+    try{
+      dispatch(fetchAllFeedAsync())
+      dispatch(fetchFollowings())
+    } catch (error) {
+      console.error(error)
+    }
   },[])
+  console.log("following",following)
 
   return (
     <Box className={styles.container}>
