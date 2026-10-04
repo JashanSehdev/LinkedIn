@@ -1,0 +1,32 @@
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { fetchCompaniesAsync, GetUserCompanyAsync } from "./handle-job/job.action";
+import { Company } from "@/types/job";
+import { Message } from "@/types/chat";
+import { createMessage, createMessageAsync, fetchChatMessage, fetchChatMessageAsync } from "./handle-message/message.action";
+
+type InitialState = {
+  messages : Message[];
+};
+
+const initialState: InitialState = {
+  messages: [],
+};
+
+const messageSlice = createSlice({
+  name: "jobSlice",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+
+
+    builder.addCase(fetchChatMessageAsync.fulfilled, (state, action : PayloadAction<Message[]>) => {
+        state.messages = action.payload
+    })
+
+    .addCase(createMessageAsync.fulfilled, (state, action : PayloadAction<Message>) => {
+        state.messages.push(action.payload)
+    })
+  }
+});
+
+export default messageSlice.reducer;

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, ParseIntPipe } from '@nestjs/common';
 import { MessageService } from './message.service.js';
 import { CreateMessageDto } from './dto/create-message.dto.js';
 import { UpdateMessageDto } from './dto/update-message.dto.js';
@@ -8,10 +8,20 @@ export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
   @Post()
-  create(@Body() createMessageDto: CreateMessageDto) {
-    return this.messageService.create(createMessageDto);
+  create(@Body() createMessageDto: CreateMessageDto, @Req() req : Request & {user : any}) {
+    return this.messageService.create(createMessageDto, req.user.id);
   }
 
+  @Get('user')
+  findUserMessage( @Req() req : Request & {user : any}) {
+    return this.messageService.findUserMessage(req. user.id);
+  }
+
+  @Get('chat/:id')
+  findChatMessage(@Param('id', ParseIntPipe) chatId : number){
+    return this.messageService.getChatMessages(chatId)
+  }
+  
   @Get()
   findAll() {
     return this.messageService.findAll();

@@ -9,6 +9,9 @@ export class File {
 
     @Column({type : 'integer'})
     message_id : number
+    
+    @Column({type : 'varchar', nullable: true})
+    file_url : string
 
     @Column({type: 'varchar'}) 
     file_name : string
@@ -17,9 +20,9 @@ export class File {
     file_type : string       
 
     @Column({type: 'integer'})   
-    file_sizd : number   
+    file_size : number   
     
-    @ManyToOne(()=> Message, (message) => message.files)
+    @ManyToOne(()=> Message, (message) => message.files, { onDelete : 'CASCADE'})
     @JoinColumn({name : 'message_id'})
     message : Relation<Message>
 }

@@ -11,6 +11,7 @@ import followReducer from './follow/follow.slice'
 import notificationReducer from './notification/notification.slice'
 import connecitonReducer from './connection/connection.slice'
 import chatRoomReducer from './chat/chat.slice'
+import messageReduxer from './message/message.slice'
 import {
   FLUSH,
   REHYDRATE,
@@ -26,7 +27,8 @@ const rootReducer = combineReducers({
     follow : followReducer,
     notification : notificationReducer,
     connection: connecitonReducer,
-    room : chatRoomReducer
+    room : chatRoomReducer,
+    messages: messageReduxer,
 });
 
 const persistConfig = {

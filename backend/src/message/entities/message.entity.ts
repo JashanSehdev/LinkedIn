@@ -25,8 +25,8 @@ export class Message {
     @JoinColumn({name : 'chat_id'})
     chat : Relation<Chat>
 
-    @OneToMany(() => File, (file) => file.message)
-    files : Relation<File>
+    @OneToMany(() => File, (file) => file.message, {cascade: true})
+    files : Relation<File[]>
 
     @ManyToOne(() => User, (user) => user.sentMessage)
     @JoinColumn({name : 'sender_id'})
