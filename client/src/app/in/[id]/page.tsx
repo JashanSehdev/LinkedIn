@@ -14,9 +14,6 @@ import { toggleFollow } from "@/features/follow/handle-follow/follow.action";
 const bannerImage =
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSB1_fCjUUdNS8MTH-VRbE0NULU2-zcuoi_shpkxGr_A236WAtbfXCvxcQ&s=10";
 
-type Prop = {
-  params: Promise<{ id: number }>;
-};
 export default function ProfilePage() {
   const [followLoading, setFollowLoading] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
@@ -38,6 +35,8 @@ export default function ProfilePage() {
       await dispatch(toggleFollow(user?.id))
       setFollowLoading(false)
     }
+
+    console.log("fethed User profile",user)
 
 useEffect(() => {
   const loadProfile = async () => {
@@ -78,7 +77,7 @@ useEffect(() => {
               <Typography variant="caption">New York, United States</Typography>
               <br />
               <Typography variant="caption">
-                58,290 followers · 500+ connections
+               {user?.followerCount ?? 0} followers · {user?.connections ?? 0} connections
               </Typography>
               <Box className={styles.buttons}>
                 { currentUser?.id !== user?.id && (

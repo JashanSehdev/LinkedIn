@@ -1,0 +1,43 @@
+
+
+.people{
+    min-width: 5rem;
+}
+
+.main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.header{
+    display: flex;
+    justify-content: space-between;
+}
+
+.chatHeader{
+    display: flex;
+    justify-content: space-between;
+}
+
+.chatArea{
+    height: 18rem;
+}
+
+.bottomPanel{
+    display: flex;
+    justify-content: space-between;
+    padding-right: 1rem;
+    margin-bottom: 1rem;
+}
+
+.sendButton{
+    border-radius: 20px !important;
+    padding: 0 !important;
+}
+
+.searchContainer{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}

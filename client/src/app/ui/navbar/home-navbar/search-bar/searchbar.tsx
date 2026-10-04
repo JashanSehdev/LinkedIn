@@ -10,13 +10,11 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import styles from "./searchbar.module.css";
-import { ChangeEvent, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import debounce from "debounce";
 import { useAppDispatch, useAppSelector } from "@/features/store";
-import { fetchAllFeedAsync } from "@/features/feed/handle-feed/feed.action";
 import { fetchUserByNameAsync } from "@/features/auth/handle-auth/auth.action";
 import { redirect } from "next/navigation";
-import { RedirectType } from "next/navigation";
 
 export default function Searchbar() {
   const dispatch = useAppDispatch();
@@ -41,7 +39,7 @@ export default function Searchbar() {
         className={styles.input}
         onChange={(e) => setSearch(e.target.value.trim())}
       />
-      { search && users.length !== 0 && <Paper className={styles.usersList}>
+      { search && <Paper className={styles.usersList}>
         <List >
           { users?.map((item) => (
             <ListItem key={item.id} onClick={() => redirect(`/in/${item.id}`)}>

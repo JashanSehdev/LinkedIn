@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Req,
@@ -29,8 +28,8 @@ export class PostController {
   }
 
   @Get()
-  findAll(@Query() search: FilterDto) {
-    return this.postService.findAll(search);
+  findAll(@Req() req : Request & {user : any} ) {
+    return this.postService.findAll(req.user.id);
   }
 
   @Get(':id')

@@ -9,6 +9,8 @@ import { useState } from "react";
 
 export default function Notification() {
   const [category, setCategory] = useState('all')
+ 
+
   return (
     <Box className={styles.container}>
       <Box className={styles.sub_container}>

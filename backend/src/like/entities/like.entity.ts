@@ -3,6 +3,10 @@ import { User } from '../../users/entites/users.entity.js';
 import { Post } from '../../post/entities/post.entity.js';
 import { join } from 'path';
 
+
+export enum reactionType {
+  
+}
 @Entity('like')
 export class Like {
 

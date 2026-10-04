@@ -7,7 +7,7 @@ import { dirname, join } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 export default new DataSource({
-  type: 'postgres', // or 'mysql', 'mariadb', etc.
+  type: 'postgres', 
   host: 'localhost',
   port: 5432,
   username: process.env.DB_USERNAME,

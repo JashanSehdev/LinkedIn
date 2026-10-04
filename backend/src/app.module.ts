@@ -13,6 +13,11 @@ import { CompanyModule } from './company/company.module.js';
 import { JobModule } from './job/job.module.js';
 import { AppliedJobModule } from './applied-job/applied-job.module.js';
 import { FollowModule } from './follow/follow.module.js';
+import { ConnectionModule } from './connection/connection.module.js';
+import { NotificationModule } from './notification/notification.module.js';
+import { ChatModule } from './chat/chat.module.js';
+import { MessageModule } from './message/message.module.js';
+import { FileModule } from './file/file.module.js';
 
 @Module({
   imports: [
@@ -42,6 +47,11 @@ import { FollowModule } from './follow/follow.module.js';
     JobModule,
     AppliedJobModule,
     FollowModule,
+    ConnectionModule,
+    NotificationModule,
+    ChatModule,
+    MessageModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [AppService],

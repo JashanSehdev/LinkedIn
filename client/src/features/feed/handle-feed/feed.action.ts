@@ -1,7 +1,7 @@
 import { api } from "@/app/api/api";
 import { Inputs } from "@/app/ui/post-job/create-post";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { CommentInput, Like, NestedCommentInput } from "./feed.type";
+import { CommentInput, NestedCommentInput } from "./feed.type";
 
 export const fetchAllFeedAsync = createAsyncThunk(
   "feed/fetchAllFeed",

@@ -8,6 +8,9 @@ import authReducer from './auth/auth.slice'
 import feedReducer from './feed/feed.slice'
 import jobReducer from './job/job.slice'
 import followReducer from './follow/follow.slice'
+import notificationReducer from './notification/notification.slice'
+import connecitonReducer from './connection/connection.slice'
+import chatRoomReducer from './chat/chat.slice'
 import {
   FLUSH,
   REHYDRATE,
@@ -20,13 +23,16 @@ const rootReducer = combineReducers({
     auth: authReducer,
     feed: feedReducer,
     jobs: jobReducer,
-    follow : followReducer
+    follow : followReducer,
+    notification : notificationReducer,
+    connection: connecitonReducer,
+    room : chatRoomReducer
 });
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist :['auth', 'feed', 'jobs', 'follow']
+  whitelist :['auth', 'feed', 'jobs', 'follow', 'notification', 'connection', 'room']
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

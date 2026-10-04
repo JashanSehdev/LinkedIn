@@ -7,7 +7,7 @@
 }
 
 .container_not_viewed{
-        display: flex;
+    display: flex;
     align-items: center;
     justify-content: space-between;
     background-color: #d7e9fb;
@@ -23,6 +23,7 @@
 }
 
 .section2 {
+    min-width: 4.3rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -30,4 +31,10 @@
 .avatar{
     height: 50px !important;
     width: 50px !important;
+}
+
+.connectButton{
+    padding: 0 2!important;
+    border-radius: 50px !important;
+    font-size: 10px !important;
 }

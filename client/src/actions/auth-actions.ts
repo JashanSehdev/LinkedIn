@@ -36,7 +36,7 @@ export const handleGoogleLogin = async () => {
   try {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
-    const idToken = await result.user.getIdToken();
+    // const idToken = await result.user.getIdToken();
 
     // await createSession(idToken);
     
@@ -51,7 +51,7 @@ export const handleEmailLogin = async (
   email: string,
   password: string,
   setLoading: Dispatch<SetStateAction<boolean>>,
-  setError?: Dispatch<SetStateAction<boolean>>,
+  // setError?: Dispatch<SetStateAction<boolean>>,
 ) => {
   try {
     setLoading(true);

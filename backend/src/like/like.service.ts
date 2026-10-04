@@ -12,15 +12,9 @@ export class LikeService {
   constructor(
     @InjectRepository(Like)
     private readonly likeRepository : Repository<Like>,
-    private readonly postService : PostService,
-    private readonly userService : UsersService,
     
   ){}
   async create(postId : number, userId : number, type: number) {
-    const post = await this.postService.findOne(postId);
-    if (!post) throw new NotFoundException('post not found');
-    const user = await this.userService.findOne(userId);
-    if (!user) throw new NotFoundException('user not found');
 
     const staleLike = await this.findUserLike(postId, userId)
     
@@ -35,8 +29,8 @@ export class LikeService {
       return {...staleLike, status:"deleted"}
     }
     const like = this.likeRepository.create({
-      postId : post.id,
-      userId : user.id,
+      postId : postId,
+      userId : userId,
       type
     })
 
@@ -59,6 +53,32 @@ export class LikeService {
     return  await this.likeRepository.save(like)
 
   }
+
+  async getReactionCounts(postId: number) {
+  const likes = await this.likeRepository.find({
+    where: {
+      postId,
+    },
+    select: {
+      type: true,
+    },
+  });
+
+  const counts : Record<number, number> = {
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+    6: 0,
+  };
+
+  for (const like of likes) {
+    counts[like.type]++;
+  }
+
+  return counts;
+}
 
   findAll() {
     return `This action returns all like`;

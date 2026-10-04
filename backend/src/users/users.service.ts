@@ -8,7 +8,7 @@ import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entites/users.entity.js';
-import { Entity, EntityNotFoundError, Repository } from 'typeorm';
+import { Entity, EntityNotFoundError, ILike, Repository } from 'typeorm';
 import bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { LoginUserDto } from './dto/login-user-dtp.js';
@@ -18,6 +18,11 @@ import { GoogleAuthDto } from './dto/google-auth.dto.js';
 import { QueryBuilder } from 'typeorm/browser';
 import { QueryDto } from './dto/query.dto.js';
 import { Follow } from '../follow/entities/follow.entity.js';
+import {
+  Connection,
+  ConnectionStatus,
+} from '../connection/entities/connection.entity.js';
+import { FollowService } from '../follow/follow.service.js';
 
 @Injectable()
 export class UsersService {
@@ -25,6 +30,14 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
+
+    @InjectRepository(Follow)
+    private readonly followRepository: Repository<Follow>,
+
+    @InjectRepository(Connection)
+    private readonly connectionRepository: Repository<Connection>,
+
+    private readonly followServices : FollowService
   ) {}
 
   async create(
@@ -39,7 +52,7 @@ export class UsersService {
         code: 'USER_ALREADY_EXIST',
         message: 'user already exist',
       });
-      
+
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
     const user = this.userRepository.create({
       ...createUserDto,
@@ -79,7 +92,14 @@ export class UsersService {
     }
   }
 
-  async verifyMe(req: Request): Promise<{username : string, id : number, email : string, followings: Follow[]}> {
+  async verifyMe(req: Request): Promise<{
+    username: string;
+    id: number;
+    email: string;
+    followingCount: number;
+    followerCount: number;
+    connections: number;
+  }> {
     const token = req.cookies?.access_token;
 
     if (!token) {
@@ -87,9 +107,14 @@ export class UsersService {
     }
     try {
       const payload = await this.jwtService.verifyAsync(token);
-      const user = await this.findOne(payload.id)
-      if(!user) throw new NotFoundException({code : "USER_NOT_FOUND", message : 'user not found '})
-      return {id : user.id, username : user.username, email : user.email, followings: user.followings};
+      const user = await this.findOne(payload.id);
+      if (!user)
+        throw new NotFoundException({
+          code: 'USER_NOT_FOUND',
+          message: 'user not found ',
+        });
+
+      return user
     } catch (error) {
       throw new UnauthorizedException('Session expired or invalid token');
     }
@@ -120,22 +145,70 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    return this.userRepository.findOne({where : {
-      id
-    }, relations: {
-      followings: true
-    } });
+    try {
+      const user = await this.userRepository.findOneBy({ id });
+      if (!user)
+        throw new NotFoundException({
+          code: 'NOT_FOUND',
+          message: 'user not found exception',
+        });
+      const followingCount = await this.followRepository.count({
+        where: {
+          followerId: user.id,
+        },
+      });
+
+      //followers count
+      const followerCount = await this.followRepository.count({
+        where: {
+          followedId: user.id,
+        },
+      });
+
+      //connection count
+      const connectSentCount = await this.connectionRepository.count({
+        where: {
+          senderId: user.id,
+          status: ConnectionStatus.ACCEPTED,
+        },
+      });
+
+      const connectReceivedCount = await this.connectionRepository.count({
+        where: {
+          receiverId: user.id,
+          status: ConnectionStatus.ACCEPTED,
+        },
+      });
+
+      return {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        followingCount,
+        followerCount,
+        connections: connectReceivedCount + connectSentCount,
+      };
+    } catch (error) {
+      throw error
+    }
   }
 
   async findAllByName(filter: QueryDto) {
-    const query = this.userRepository.createQueryBuilder('user');
+    
+    if (!filter.username) return[]
 
-    if (filter.username) {
-      query.where('user.username ILIKE :username', {
-        username: `%${filter.username}%`,
-      });
-    }
+    return  await this.userRepository.find({
+      where: {
+        username : ILike(`%${filter.username}%`)
+      },
+      select : {
+        id : true,
+        username :true,
+        email : true
+      },
+      take : 10
 
-    return await query.getMany();
+    })
+
   }
 }

@@ -10,6 +10,7 @@ import {
 } from "./handle-feed/feed.action";
 import { Like } from "./handle-feed/feed.type";
 import { Replace } from "lucide-react";
+import { toggleFollow } from "../follow/handle-follow/follow.action";
 
 type InitialState = {
   feeds: Post[];
@@ -88,7 +89,14 @@ const feedSlice = createSlice({
 
           post.comments = removeComment(post.comments);
         },
-      );
+      )
+      .addCase(toggleFollow.fulfilled, (state, action) => {
+        const feed = state.feeds.find((item) => item.user.id === action.payload.followedId);
+
+        if (!feed) return 
+
+        feed.isfollowing = action.payload.removed
+      })
 
     // .addCase(
     //   deleteCommentAsync.fulfilled,

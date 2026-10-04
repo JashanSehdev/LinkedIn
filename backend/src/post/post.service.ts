@@ -6,7 +6,9 @@ import { Post } from './entities/post.entity.js';
 import { Repository } from 'typeorm';
 import { User } from '../users/entites/users.entity.js';
 import { Like } from '../like/entities/like.entity.js';
-import { FilterDto } from './dto/filter-dto.js';
+import { LikeService } from '../like/like.service.js';
+import { FollowService } from '../follow/follow.service.js';
+import { ConnectionService } from '../connection/connection.service.js';
 
 export interface FeedPost {
   author: string;
@@ -23,6 +25,9 @@ export class PostService {
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
+    private readonly likeService: LikeService,
+    private readonly followService : FollowService,
+    private readonly connectionService : ConnectionService
   ) {}
 
   async create(createPostDto: CreatePostDto, user: User) {
@@ -39,38 +44,39 @@ export class PostService {
     return this.postRepository.save(createdPost);
   }
 
-async findAll(filter: FilterDto) {
-  const query = this.postRepository
-    .createQueryBuilder('post')
-    .leftJoinAndSelect(
-      'post.comments',
-      'comment',
-      'comment.parentId IS NULL',
-    )
-    .leftJoinAndSelect('post.likes', 'like')
-    .leftJoin('post.user', 'user')
-    .addSelect([
-      'user.id',
-      'user.username',
-      'user.email',
-    ]);
-
-  if (filter.search) {
-    query.andWhere('post.content ILike :search', {
-      search: `%${filter.search}%`,
+  async findAll(userId : number) {
+    const posts = await this.postRepository.find({
+      relations: {
+        user: true
+      },
+      select: {
+        user: {
+          id :true,
+          username : true
+        }
+      }
     });
+
+    return await Promise.all(
+      posts.map(async (post) => {
+        return {
+          ...post,
+          likeCount :  await this.likeService.getReactionCounts(post.id),
+          isFollowing :  await this.followService.isFollowing(userId, post.user.id),
+          isConnected : await this.connectionService.getConnectionStatus(userId, post.user.id)
+        };
+      }),
+    );
   }
 
-  return await query.getMany();
-}
   async findOne(id: number) {
     return await this.postRepository.findOne({
       relations: {
         likes: true,
         comments: {
-          childComments:true
+          childComments: true,
         },
-        user:true
+        user: true,
       },
       where: {
         id,

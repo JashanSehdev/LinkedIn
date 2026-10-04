@@ -5,18 +5,15 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateFollowDto } from './dto/create-follow.dto.js';
-import { UpdateFollowDto } from './dto/update-follow.dto.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Follow } from './entities/follow.entity.js';
 import { Repository } from 'typeorm';
-import { UsersService } from '../users/users.service.js';
 
 @Injectable()
 export class FollowService {
   constructor(
     @InjectRepository(Follow)
     private readonly followRepository: Repository<Follow>,
-    private readonly userService: UsersService,
   ) {}
   async create(
     createFollowDto: CreateFollowDto,
@@ -61,12 +58,6 @@ export class FollowService {
         message: 'follower and followed should not be same',
       });
 
-    const user1 = await this.userService.findOne(followerId);
-    if (!user1) throw new NotFoundException('follower not found');
-
-    const user2 = await this.userService.findOne(createFollowDto.followedId);
-    if (!user2) throw new NotFoundException(`followed User not found`);
-
     const alreadyFollowed = await this.followRepository.findOne({
       where: {
         followedId: createFollowDto.followedId,
@@ -96,6 +87,16 @@ export class FollowService {
     if (!id) throw new UnauthorizedException('User not found')
       console.log("recieved user id",id)
     return await this.followRepository.findBy({ followedId: id });
+  }
+
+
+  async isFollowing(followerId : number, followedId : number) {
+    const follow = await this.followRepository.findOneBy({
+      followedId,
+      followerId
+    })
+
+    return !!follow
   }
 
   async findFollowing(id: number) {
