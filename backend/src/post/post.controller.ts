@@ -33,8 +33,8 @@ export class PostController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postService.findOne(+id);
+  findOne(@Param('id') id: string, @Req() req : Request & {user : any}) {
+    return this.postService.findOneById(+id, req.user.id);
   }
 
   @Put(':id')

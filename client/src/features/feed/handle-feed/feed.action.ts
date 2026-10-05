@@ -117,3 +117,19 @@ export const fetchPostCommentAsync = createAsyncThunk(
     
   }
 )
+
+export const fetchPostByIdAsync = createAsyncThunk(
+  "feed/fetch-post-by-id",
+  async(postId : number, thunkApi) => {
+    try{
+          const response = await api.get(`/posts/${postId}`)
+
+          return response.data
+    } catch(error : any) {
+      return thunkApi.rejectWithValue(
+        error.response.data ?? 'something went wrong'
+      )
+    }
+    
+  }
+)

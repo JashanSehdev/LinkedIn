@@ -95,6 +95,11 @@ export default function FeedCard({ post }: Prop) {
     setShowComments(true);
   };
 
+  //copy link
+  const copyToClipboard = (e) => {
+    navigator.clipboard.writeText(window.location.toString() + `/${post.id}`);
+  };
+
   return (
     <Paper className={styles.container}>
       <Box className={styles.section1}>
@@ -151,7 +156,7 @@ export default function FeedCard({ post }: Prop) {
                         <ListItemText primary={"Connect"} />
                       </ListItem>
                     )}
-                    <ListItem>
+                    <ListItem onClick={copyToClipboard}>
                       <ListItemIcon>
                         <InsertLinkIcon />
                       </ListItemIcon>

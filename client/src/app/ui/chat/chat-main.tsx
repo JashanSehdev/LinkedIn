@@ -210,7 +210,7 @@ export default function ChatMain({ roomId }: { roomId?: number }) {
                   {addToChat && (
                     <Box ref={addToChatRef} className={styles.addToChat}>
                       <List>
-                        {connections.map((connection) => (
+                        {connections?.map((connection) => (
                           <ListItem
                             key={connection.connectionId}
                             onClick={() => {

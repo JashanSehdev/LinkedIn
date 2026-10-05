@@ -26,8 +26,8 @@ export class PostService {
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
     private readonly likeService: LikeService,
-    private readonly followService : FollowService,
-    private readonly connectionService : ConnectionService
+    private readonly followService: FollowService,
+    private readonly connectionService: ConnectionService,
   ) {}
 
   async create(createPostDto: CreatePostDto, user: User) {
@@ -44,29 +44,33 @@ export class PostService {
     return this.postRepository.save(createdPost);
   }
 
-
-  async findAll(userId : number) {
+  async findAll(userId: number) {
     const posts = await this.postRepository.find({
       relations: {
-        user: true
+        user: true,
       },
       select: {
         user: {
-          id :true,
-          username : true
-        }
-      }
+          id: true,
+          username: true,
+        },
+      },
     });
-
 
     return await Promise.all(
       posts.map(async (post) => {
         return {
           ...post,
-          likeCount :  await this.likeService.getReactionCounts(post.id),
-          isFollowing :  await this.followService.isFollowing(userId, post.user.id),
-          isConnected : await this.connectionService.getConnectionStatus(userId, post.user.id),
-          userLike : await this.likeService.findUserLike(post.id, userId)
+          likeCount: await this.likeService.getReactionCounts(post.id),
+          isFollowing: await this.followService.isFollowing(
+            userId,
+            post.user.id,
+          ),
+          isConnected: await this.connectionService.getConnectionStatus(
+            userId,
+            post.user.id,
+          ),
+          userLike: await this.likeService.findUserLike(post.id, userId),
         };
       }),
     );
@@ -74,17 +78,42 @@ export class PostService {
 
   async findOne(id: number) {
     return await this.postRepository.findOne({
-      relations: {
-        likes: true,
-        comments: {
-          childComments: true,
-        },
-        user: true,
-      },
       where: {
         id,
       },
     });
+  }
+
+  async findOneById(id: number, userId: number) {
+    const post = await this.postRepository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        user: true,
+      },
+      select: {
+        user: {
+          id: true,
+          username: true,
+        },
+      },
+    });
+
+    if (!post) {
+      throw new NotFoundException('Error not found Exception');
+    }
+
+    return {
+      ...post,
+      likeCount: await this.likeService.getReactionCounts(post.id),
+      isFollowing: await this.followService.isFollowing(userId, post.user.id),
+      isConnected: await this.connectionService.getConnectionStatus(
+        userId,
+        post.user.id,
+      ),
+      userLike: await this.likeService.findUserLike(post.id, userId),
+    };
   }
 
   async update(id: number, updatePostDto: UpdatePostDto) {
