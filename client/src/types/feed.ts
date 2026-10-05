@@ -11,8 +11,28 @@ export type Post = {
   comments: Comment[],
   isfollowing: boolean,
   isConnected : boolean,
-  userLike : Like | null
+  userLike : Like | null,
+    isRepost: boolean;
+  repostOfId: number | null;
+  repostOf: RepostOf | null;
+
 }
+
+type RepostOf = {
+  id: number;
+  content: string | null;
+  media: string | null;
+  shared: number;
+  hashtags: string[];
+  parentId: number | null;
+  isRepost: boolean;
+  repostOfId: number | null;
+
+  user: {
+    id: number;
+    username: string;
+  };
+};
 
 type LikeCount  = {
   1 : number

@@ -8,12 +8,14 @@ import {
   Req,
   Put,
   Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { PostService } from './post.service.js';
 import { CreatePostDto } from './dto/create-post.dto.js';
 import { UpdatePostDto } from './dto/update-post.dto.js';
 import { Request } from 'express';
 import { FilterDto } from './dto/filter-dto.js';
+import { CreateRepostDto } from './dto/create-repost.dto.js';
 
 @Controller('posts')
 export class PostController {
@@ -25,6 +27,14 @@ export class PostController {
     @Req() req: Request & { user: any },
   ) {
     return this.postService.create(createPostDto, req.user);
+  }
+
+  @Post('/:id/repost')
+  createRepost(@Param('id', ParseIntPipe) postId : number, 
+  @Req() req: Request & { user: any }, 
+  @Body() createRepostDto : CreateRepostDto
+) {
+    return this.postService.createRepost(postId,createRepostDto, req.user )
   }
 
   @Get()

@@ -17,7 +17,7 @@ import styles from "./feed-card.module.css";
 import CommentCard from "../comment-section/comments/comments";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/features/store";
-import { likeAsync } from "@/features/feed/handle-feed/feed.action";
+import { createRepostThunk, likeAsync } from "@/features/feed/handle-feed/feed.action";
 import { Post } from "@/types/feed";
 import CommentSection from "../comment-section/comment-section";
 import { toggleFollow } from "@/features/follow/handle-follow/follow.action";
@@ -100,8 +100,12 @@ export default function FeedCard({ post }: Prop) {
     navigator.clipboard.writeText(window.location.toString() + `/${post.id}`);
   };
 
-  return (
+  return (<Box>
+    {
+        post.isRepost && <Paper> <Typography>{post.user.username} reposted this</Typography> </Paper>
+      }
     <Paper className={styles.container}>
+      
       <Box className={styles.section1}>
         <Box>
           <Avatar src={profilePic} className={styles.avatar} />
@@ -172,7 +176,7 @@ export default function FeedCard({ post }: Prop) {
         </Box>
       </Box>
       <Box>
-        <p className={styles.description}>{post?.content}</p>
+        <p className={styles.description}>{post.isRepost ? post.repostOf?.content: post?.content}</p>
       </Box>
       <Box className={styles.images}>
         {post?.media && <Box className={styles.image} component={"img"} src={post?.media} />}
@@ -282,7 +286,7 @@ export default function FeedCard({ post }: Prop) {
           </svg>
           <span>Comments</span>
         </Box>
-        <Box className={styles.button}>
+        <Box className={styles.button} onClick={() => dispatch(createRepostThunk({postId : post.id}))}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             id="repost-small"
@@ -329,5 +333,6 @@ export default function FeedCard({ post }: Prop) {
         </Box>
       )}
     </Paper>
+    </Box>
   );
 }

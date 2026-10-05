@@ -16,28 +16,42 @@ export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar' })
-  content: string;
+  @Column({ type: 'varchar', nullable: true })
+  content: string | null;
 
-  @Column({ type: 'varchar', nullable:true })
+  @Column({ type: 'varchar', nullable: true })
   media: string;
 
-  @ManyToOne(() => User, (user) => user.posts, {onDelete: 'CASCADE'})
+  @ManyToOne(() => User, (user) => user.posts, { onDelete: 'CASCADE' })
   user: Relation<User>;
 
-  @OneToMany(() => Like, (like) => like.post, {cascade:true})
+  @OneToMany(() => Like, (like) => like.post, { cascade: true })
   likes: Like[];
 
-  @Column({type: 'integer', default:0})
-  shared: number
+  @Column({ type: 'integer', default: 0 })
+  shared: number;
 
-  @Column({type : 'varchar', array:true, default: () => "'{}'" })
-  hashtags: string[]
+  @Column({ type: 'varchar', array: true, default: () => "'{}'" })
+  hashtags: string[];
 
-  @Column({type : 'integer', nullable : true})
-  parentId : number
+  @Column({ type: 'integer', nullable: true })
+  parentId: number;
 
+  @Column({ type: 'boolean', default: false })
+  isRepost: boolean;
 
-  @OneToMany(() => Comment, (comment) => comment.post)
-  comments : Relation<Comment[]>
+  @Column({ type: 'integer', nullable: true })
+  repostOfId: number | null;
+
+  @ManyToOne(() => Post, (post) => post.reposts, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
+  repostOf: Relation<Post> | null;
+
+  @OneToMany(() => Post, (post) => post.repostOf)
+  reposts: Relation<Post[]>;
+
+  @OneToMany(() => Comment, (comment) => comment.post, {cascade :true})
+  comments: Relation<Comment[]>;
 }

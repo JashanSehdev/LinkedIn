@@ -30,7 +30,7 @@ export class Comment {
     @JoinColumn({name : 'userId', referencedColumnName : 'id'})
     user : Relation<User>
 
-    @ManyToOne(() => Post, (post) => post.comments)
+    @ManyToOne(() => Post, (post) => post.comments, {onDelete : 'CASCADE'})
     @JoinColumn({name : 'postId', referencedColumnName : 'id'})
     post : Relation<Post>
 }

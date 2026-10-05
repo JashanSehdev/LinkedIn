@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, Search } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  Search,
+} from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto.js';
 import { UpdatePostDto } from './dto/update-post.dto.js';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,6 +14,9 @@ import { Like } from '../like/entities/like.entity.js';
 import { LikeService } from '../like/like.service.js';
 import { FollowService } from '../follow/follow.service.js';
 import { ConnectionService } from '../connection/connection.service.js';
+import { ifError } from 'assert';
+import { throwError } from 'rxjs';
+import { CreateRepostDto } from './dto/create-repost.dto.js';
 
 export interface FeedPost {
   author: string;
@@ -80,6 +88,88 @@ export class PostService {
     return await this.postRepository.findOne({
       where: {
         id,
+      },
+    });
+  }
+
+  async createRepost(
+    postId: number,
+    createRepostDto: CreateRepostDto,
+    user: User,
+  ) {
+    const post = await this.findOne(postId);
+    if (!post)
+      throw new NotFoundException({
+        code: 'NOT_FOUND',
+        message: 'post not found',
+      });
+
+    const repost = await this.findRepost(post, user.id);
+
+    if (repost)
+      throw new ConflictException({
+        code: 'ALREADY_EXIST',
+        message: 'repost already exist',
+      });
+
+    const newRepost = this.postRepository.create({
+      ...createRepostDto,
+      repostOfId: postId,
+      user: user,
+      isRepost: true,
+    });
+
+    const savedRepost = await this.postRepository.save(newRepost);
+    return this.postRepository.findOne({
+      where: {
+        id: savedRepost.id,
+      },
+      relations: {
+        repostOf: {
+          user: true,
+        },
+        user: true,
+      },
+      select: {
+        id: true,
+        content: true,
+        media: true,
+        shared: true,
+        hashtags: true,
+        parentId: true,
+        isRepost: true,
+        repostOfId: true,
+        user : {
+          id : true,
+          username : true
+        },
+        repostOf: {
+          id: true,
+          content: true,
+          media: true,
+          shared: true,
+          hashtags: true,
+          parentId: true,
+          isRepost: true,
+          repostOfId: true,
+          user: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+  }
+
+  async findRepost(postRef: Post, userId: number) {
+    return await this.postRepository.findOne({
+      where: {
+        repostOf: {
+          id: postRef.id,
+        },
+        user: {
+          id: userId,
+        },
       },
     });
   }

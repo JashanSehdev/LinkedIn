@@ -20,3 +20,8 @@ export type NestedCommentInput = {
     text : string,
     parentId: number
 }
+
+export type createRepost ={
+    postId :number,
+    content ?: string
+}
