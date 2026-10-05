@@ -1,13 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { fetchCompaniesAsync, GetUserCompanyAsync } from "./handle-job/job.action";
-import { Company } from "@/types/job";
+import { fetchCompaniesAsync, fetchJobs, getPublicCompaniesAsync, GetUserCompanyAsync } from "./handle-job/job.action";
+import { Company, Job } from "@/types/job";
 
 type InitialState = {
-  companies : Company[];
+  user_companies : Company[];
+  all_companies : Company[];
+  jobs : Job[]
 };
 
 const initialState: InitialState = {
-  companies: [],
+  user_companies: [],
+  all_companies: [],
+  jobs : []
 };
 
 const jobSlice = createSlice({
@@ -18,11 +22,17 @@ const jobSlice = createSlice({
 
 
     builder.addCase(fetchCompaniesAsync.fulfilled, (state, action : PayloadAction<Company[]>) => {
-        state.companies= action.payload
+        state.user_companies= action.payload
     })
     
     .addCase(GetUserCompanyAsync.fulfilled, (state, action : PayloadAction<Company[]>) => {
-      state.companies = action.payload
+      state.user_companies = action.payload
+    })
+    .addCase(getPublicCompaniesAsync.fulfilled, (state, action : PayloadAction<Company[]>) => {
+      state.all_companies = action.payload
+    })
+    .addCase(fetchJobs.fulfilled, (state, action) => {
+      state.jobs = action.payload
     })
   }
 });

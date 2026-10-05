@@ -37,9 +37,6 @@ export class CommentService {
 
   async findAll() {
     return await this.commentRepository.find({
-      relations: {
-        childComments: true,
-      },
     });
   }
 
@@ -49,11 +46,8 @@ export class CommentService {
         postId,
         parentId: IsNull()
       },
-      relations :{
-        childComments: true
-      }
     })
-    return {parentComment, children : parentComment.length}
+    return parentComment
   }
 
   async getChildrenComments(commentId :number) {

@@ -101,3 +101,19 @@ export const deleteCommentAsync = createAsyncThunk(
     }
   },
 );
+
+export const fetchPostCommentAsync = createAsyncThunk(
+  "feed/fetch-feed-comment",
+  async(postId : number, thunkApi) => {
+    try{
+          const response = await api.get(`/comment/post/${postId}`)
+
+          return response.data
+    } catch(error : any) {
+      return thunkApi.rejectWithValue(
+        error.response.data ?? 'something went wrong'
+      )
+    }
+    
+  }
+)

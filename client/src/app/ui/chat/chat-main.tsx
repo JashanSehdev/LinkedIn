@@ -26,18 +26,21 @@ import { fetchConnectionAsync } from "@/features/connection/handle-connections/c
 import { useEffect, useRef, useState } from "react";
 import { createChatAsync, getRoomAsync } from "@/features/chat/handle-chat/chat.actions";
 import { useRouter } from "next/navigation";
-import { createMessageAsync, fetchChatMessageAsync } from "@/features/message/handle-message/message.action";
+import {
+  createMessageAsync,
+  fetchChatMessageAsync,
+} from "@/features/message/handle-message/message.action";
 import { SubmitHandler, useForm } from "react-hook-form";
 import CloudinaryUploader from "./upload-widget/cloudinary-widget";
-
+import { socket } from "@/lib/socket";
+import { Message } from "@/types/chat";
 
 type Inputs = {
-  text: string,
-  file_url : string
+  text: string;
+  file_url: string;
+};
 
-}
-
-export default function  ChatMain({roomId} : {roomId ?: number}) {
+export default function ChatMain({ roomId }: { roomId?: number }) {
   const [addToChat, setAddToChat] = useState(false);
   const addToChatRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
@@ -45,41 +48,81 @@ export default function  ChatMain({roomId} : {roomId ?: number}) {
   const chatrooms = useAppSelector((state) => state.room.chatRoom);
   const user = useAppSelector((state) => state.auth.user);
   const router = useRouter();
-  const messages = useAppSelector((state) => state.messages.messages)
+  const [messages, setMessages] = useState<Message[]>([]);
 
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-
-  //form handling
-    const {
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+  //form handlingchat-main
+  const {
     register,
     handleSubmit,
     setValue,
-   formState: { errors },
-  } = useForm<Inputs>()
+    formState: { errors },
+  } = useForm<Inputs>();
 
-  const onSubmit  : SubmitHandler<Inputs> = (data : Inputs) => {
-    if(!roomId) return
-    const sendData = data.file_url ?{
-      chat_id : roomId,
-      text : data.text,
-      files : [{
-        file_url : data.file_url,
-        file_name : "sticker",
-        file_size : 0,
-        file_type : 'cloudinary_url'
-      }]
-    } : {
-      chat_id : roomId,
-      text : data.text
-    }
-    dispatch(createMessageAsync(sendData))
-  }
+  const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
+    if (!roomId) return;
+    const sendData = data.file_url
+      ? {
+          chat_id: roomId,
+          text: data.text,
+          files: [
+            {
+              file_url: data.file_url,
+              file_name: "sticker",
+              file_size: 0,
+              file_type: "cloudinary_url",
+            },
+          ],
+        }
+      : {
+          chat_id: roomId,
+          text: data.text,
+        };
 
-  
+    await dispatch(createMessageAsync(sendData));
+  };
+
   useEffect(() => {
-    if (!roomId) return
-    dispatch(fetchChatMessageAsync(roomId))
-  },[roomId, dispatch])
+    const handleMessage = (msg) => {
+      setMessages((prevMessages) => [...prevMessages, msg]);
+    };
+    socket.on(`room_${roomId}`, handleMessage);
+
+    return () => {
+      socket.off(`room_${roomId}`, handleMessage);
+    };
+  }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  useEffect(() => {
+    if (!roomId) return;
+
+    const fetchMessage = async () => {
+      const result = await dispatch(fetchChatMessageAsync(roomId)).unwrap();
+      setMessages(result);
+    };
+    fetchMessage();
+  }, [roomId, dispatch]);
+
+  // useEffect(() => {
+  //   if (!roomId) return;
+
+  //   const handleReceiveMessage = (message: any) => {
+  //     dispatch({ type: 'message/get-chat-message', payload: message });
+  //   }
+  //    socket.on('events', handleReceiveMessage);
+
+  //   return () => {
+  //     socket.off('events', handleReceiveMessage);
+  //   };
+  // },[roomId, dispatch])
 
   const handleConnections = async () => {
     if (addToChat) {
@@ -96,10 +139,7 @@ export default function  ChatMain({roomId} : {roomId ?: number}) {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        addToChatRef.current &&
-        !addToChatRef.current.contains(event.target as Node)
-      ) {
+      if (addToChatRef.current && !addToChatRef.current.contains(event.target as Node)) {
         setAddToChat(false);
       }
     };
@@ -110,7 +150,6 @@ export default function  ChatMain({roomId} : {roomId ?: number}) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
 
   return (
     <Container>
@@ -136,7 +175,10 @@ export default function  ChatMain({roomId} : {roomId ?: number}) {
             <Paper>
               <List>
                 {chatrooms.map((room) => (
-                  <ListItem key={room.roomId} onClick={() =>  router.push(`/messaging/${room.roomId}`)}>
+                  <ListItem
+                    key={room.roomId}
+                    onClick={() => router.push(`/messaging/${room.roomId}`)}
+                  >
                     <ListItemAvatar>
                       <Avatar />
                     </ListItemAvatar>
@@ -150,7 +192,7 @@ export default function  ChatMain({roomId} : {roomId ?: number}) {
             <Box>
               <Box className={styles.chatHeader}>
                 <Box>
-                  <Typography>{'username '}</Typography>
+                  <Typography>{"username "}</Typography>
                   <Typography variant="subtitle2">Mobile 6h</Typography>
                 </Box>
                 <Box>
@@ -163,70 +205,82 @@ export default function  ChatMain({roomId} : {roomId ?: number}) {
                 </Box>
               </Box>
               <Divider />
-              <Box className={styles.chatArea}>
-                {addToChat && (
-                  <Box ref={addToChatRef} className={styles.addToChat}>
-                    <List>
-                      {connections.map((connection) => (
-                        <ListItem key={connection.connectionId} onClick={()=>{dispatch(createChatAsync(connection.user.id)); dispatch(getRoomAsync())}}>
-                          <ListItemAvatar>
-                            <Avatar />
-                          </ListItemAvatar>
-                          <ListItemText secondary={connection?.user?.username} />
-                        </ListItem>
-                      ))}
-                    </List>
-                  </Box>
-                )}
+              <div ref={messagesEndRef}>
+                <Box className={styles.chatArea}>
+                  {addToChat && (
+                    <Box ref={addToChatRef} className={styles.addToChat}>
+                      <List>
+                        {connections.map((connection) => (
+                          <ListItem
+                            key={connection.connectionId}
+                            onClick={() => {
+                              dispatch(createChatAsync(connection.user.id));
+                              dispatch(getRoomAsync());
+                            }}
+                          >
+                            <ListItemAvatar>
+                              <Avatar />
+                            </ListItemAvatar>
+                            <ListItemText secondary={connection?.user?.username} />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Box>
+                  )}
 
-                {
-                  roomId && messages.map((item) => (<Paper key={item.id} className={styles.text} sx={{alignSelf:item.sender_id === user?.id ? "end" : "flex-start"}}> 
-                  {
-                    item.files && item.files.length > 0 && (
-                      <>
-                      <Box
-                        component={'img'}
-                        src={item.files[0].file_url}
-                        alt="sticker"
-                        height={100}
-                        width={100}
-                      />
-                      </>
-                    )
-                  }
-                    {item.text}
-                  </Paper>))
-                }
-              </Box>
+                  {roomId &&
+                    messages.map((item) => (
+                      <Paper
+                        key={item.id}
+                        className={styles.text}
+                        sx={{ alignSelf: item.sender_id === user?.id ? "end" : "flex-start" }}
+                      >
+                        {item.files && item.files.length > 0 && (
+                          <>
+                            <Box
+                              component={"img"}
+                              src={item.files[0].file_url}
+                              alt="sticker"
+                              height={100}
+                              width={100}
+                            />
+                          </>
+                        )}
+                        {item.text}
+                      </Paper>
+                    ))}
+                </Box>
+              </div>
               <Box className={styles.chatPanel}>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                <TextField fullWidth multiline rows={4} {...register('text')} />
-                <input hidden {...register('file_url')} />
-                <Box className={styles.bottomPanel}>
-                  <Box>
-                    <CloudinaryUploader setValue={setValue} fieldName="file_url" />
+                  <TextField fullWidth multiline rows={4} {...register("text")} />
+                  <input hidden {...register("file_url")} />
+                  <Box className={styles.bottomPanel}>
+                    <Box>
+                      <CloudinaryUploader setValue={setValue} fieldName="file_url" />
 
-                    <IconButton>
-                      <LinkOutlinedIcon />
-                    </IconButton>
+                      <IconButton>
+                        <LinkOutlinedIcon />
+                      </IconButton>
 
-                    <IconButton>
-                      <GifOutlinedIcon />
-                    </IconButton>
+                      <IconButton>
+                        <GifOutlinedIcon />
+                      </IconButton>
 
-                    <IconButton>
-                      <SentimentSatisfiedAltOutlinedIcon />
-                    </IconButton>
+                      <IconButton>
+                        <SentimentSatisfiedAltOutlinedIcon />
+                      </IconButton>
+                    </Box>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      className={styles.sendButton}
+                      type="submit"
+                      disabled={!roomId}
+                    >
+                      send
+                    </Button>
                   </Box>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    className={styles.sendButton}
-                    type="submit"
-                  >
-                    send
-                  </Button>
-                </Box>
                 </form>
               </Box>
             </Box>

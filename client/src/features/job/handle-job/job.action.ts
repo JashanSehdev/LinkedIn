@@ -44,10 +44,8 @@ export const GetUserCompanyAsync = createAsyncThunk(
   "job/get-user-company",
   async (_, thunkApi) => {
     try {
-      const response = await api.get("/companies", {
-        params: {
-          created_by_user: "true"
-        }
+      const response = await api.get("/companies/user", {
+
       });
 
       console.log("Job Created");
@@ -57,3 +55,41 @@ export const GetUserCompanyAsync = createAsyncThunk(
     }
   },
 );
+
+export const getPublicCompaniesAsync = createAsyncThunk(
+  'job/get-public-company',
+  async (_, thunkApi) => {
+    try {
+      const response = await api.get("/companies/", {
+      });
+      console.log("Job Created");
+      return response.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.response?.data || "something went wrong");
+    }
+  },
+)
+
+export const fetchJobs = createAsyncThunk(
+  'job/fetch-all-jobs', 
+  async (_, thunkApi) => {
+    try {
+      const response = await api.get("/jobs")
+      return response.data
+    }catch (error: any) {
+      return thunkApi.rejectWithValue(error?.response?.data || "something went wrong");
+    }
+  }
+)
+
+export const fetchJobByIdAsync = createAsyncThunk(
+  'job/fetch-job-by-Id', 
+  async (id : number, thunkApi) => {
+    try {
+      const response = await api.get(`/jobs/${id}`)
+      return response.data
+    }catch (error: any) {
+      return thunkApi.rejectWithValue(error?.response?.data || "something went wrong");
+    }
+  }
+)

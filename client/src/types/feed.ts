@@ -10,7 +10,7 @@ export type Post = {
   hashTags: string[]
   comments: Comment[],
   isfollowing: boolean,
-  isconnected : boolean,
+  isConnected : boolean,
   userLike : Like | null
 }
 
@@ -39,7 +39,6 @@ export type Comment = {
   parentId : number | null,
   userId : number,
   postId : number,
-  childComments?: Comment[]
 }
 
 export type Like =  {

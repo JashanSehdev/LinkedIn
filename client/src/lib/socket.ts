@@ -5,9 +5,4 @@ const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL ?? 'http://localhost:3001'
 export const socket = io(SOCKET_URL, {
   withCredentials: true,
   autoConnect: false,
-  transports: ['websocket', 'polling'],
-  reconnection: true,
-  reconnectionAttempts: 5,
-  reconnectionDelay: 1000,
-  timeout: 5000,
 });

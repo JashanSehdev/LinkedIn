@@ -1,6 +1,22 @@
 import { api } from "@/app/api/api";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+export const createConnectionAsync = createAsyncThunk(
+  "connection/accept",
+  async (id: number, thunkApi) => {
+    try {
+      const response = await api.post(`/connections/`, {receiverId : id});
+      return response.data
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(
+        error?.response?.data || "somthing went wrong",
+      );
+    }
+  },
+);
+
+
+
 export const acceptConnectionAsync = createAsyncThunk(
   "connection/accept",
   async (id: number, thunkApi) => {
@@ -42,9 +58,8 @@ export const fetchConnectionAsync = createAsyncThunk(
       return response.data
     } catch (error: any) {
       return thunkApi.rejectWithValue(
-        error?.response?.data || "somthing went wrong",
+        error?.response?.data || "something went wrong",
       );
     }
   },
 );
-

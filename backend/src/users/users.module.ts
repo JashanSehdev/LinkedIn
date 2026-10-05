@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { Connection } from '../connection/entities/connection.entity.js';
 import { Follow } from '../follow/entities/follow.entity.js';
 import { FollowModule } from '../follow/follow.module.js';
+import { ConnectionModule } from '../connection/connection.module.js';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Follow, Connection]),FollowModule],

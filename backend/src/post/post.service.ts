@@ -44,6 +44,7 @@ export class PostService {
     return this.postRepository.save(createdPost);
   }
 
+
   async findAll(userId : number) {
     const posts = await this.postRepository.find({
       relations: {

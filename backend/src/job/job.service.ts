@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateJobDto } from './dto/create-job.dto.js';
 import { UpdateJobDto } from './dto/update-job.dto.js';
 import { Repository } from 'typeorm';
@@ -17,22 +17,40 @@ export class JobService {
   }
 
   async findAll() {
-    return await this.jobRepository.find()
+    return await this.jobRepository.find({
+      relations : {
+        company: true
+      }
+    })
   }
 
   async findOne(id: number) {
-    return await this.jobRepository.findOneByOrFail({id});
+    return await this.jobRepository.findOne({
+      where: {
+        id
+      },
+      relations : {
+        company: true
+      }
+    });
   }
 
   async update(id: number, updateJobDto: UpdateJobDto) {
     let job = await this.findOne(id);
-
+    if (!job)throw new NotFoundException({
+      code : 'NOT_FOUND',
+      message : 'job not found'
+    })
     job = {...updateJobDto, ...job}
     return  await this.jobRepository.update(id, job)
   }
 
   async remove(id: number) {
     const job = await this.findOne(id)
+    if (!job)throw new NotFoundException({
+      code : 'NOT_FOUND',
+      message : 'job not found'
+    })
     return this.jobRepository.remove(job)
   }
 }

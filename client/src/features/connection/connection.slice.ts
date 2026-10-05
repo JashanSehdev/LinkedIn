@@ -1,6 +1,7 @@
 import { Connection } from "@/types/connection";
 import { createSlice, PayloadAction} from "@reduxjs/toolkit";
-import { fetchConnectionAsync } from "./handle-connections/connection.action";
+import { createConnectionAsync, fetchConnectionAsync } from "./handle-connections/connection.action";
+import { createCommentAsync } from "../feed/handle-feed/feed.action";
 
 
 type InitialState = {
@@ -20,6 +21,8 @@ const connectionSlice = createSlice({
     .addCase(fetchConnectionAsync.fulfilled, (state, action: PayloadAction<Connection[]>) => {
         state.connections = action.payload
     })
+   
+ 
   }
 });
 

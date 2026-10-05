@@ -7,13 +7,13 @@ import JobPostCard from "../ui/Jobs/right-section/job-post/job-post";
 import JobMatch from "../ui/Jobs/right-section/job-match/job-match";
 import { useAppDispatch } from "@/features/store";
 import { useEffect } from "react";
-import { fetchCompaniesAsync } from "@/features/job/handle-job/job.action";
+import { fetchCompaniesAsync, getPublicCompaniesAsync } from "@/features/job/handle-job/job.action";
 
 export default function Jobs() {
   const dispatch = useAppDispatch()
   
   useEffect(()=>{
-    dispatch(fetchCompaniesAsync())
+    dispatch(getPublicCompaniesAsync())
   }, [])
   return (
     <Box className={styles.container}>

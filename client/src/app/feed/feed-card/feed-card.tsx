@@ -24,6 +24,10 @@ import { toggleFollow } from "@/features/follow/handle-follow/follow.action";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import InsertLinkIcon from "@mui/icons-material/InsertLink";
 import AddIcon from "@mui/icons-material/Add";
+import {
+  createConnectionAsync,
+  deleteConnectionAsync,
+} from "@/features/connection/handle-connections/connection.action";
 
 type Like = {
   id: number;
@@ -59,6 +63,10 @@ export default function FeedCard({ post }: Prop) {
     await dispatch(likeAsync({ id: post.id, type: 1 }));
   };
 
+  const handleCreateConnection = async () => {
+    await dispatch(createConnectionAsync(post.user.id));
+  };
+
   const doesFollow = followings?.some((item) => item.followerId === user?.id);
 
   const handleFollow = async () => {
@@ -83,6 +91,10 @@ export default function FeedCard({ post }: Prop) {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
+  const handleComments = () => {
+    setShowComments(true);
+  };
+
   return (
     <Paper className={styles.container}>
       <Box className={styles.section1}>
@@ -103,10 +115,7 @@ export default function FeedCard({ post }: Prop) {
                     + Following
                   </Button>
                 ) : (
-                  <button
-                    className={styles.follow_button}
-                    onClick={handleFollow}
-                  >
+                  <button className={styles.follow_button} onClick={handleFollow}>
                     + Follow
                   </button>
                 ))}
@@ -130,14 +139,18 @@ export default function FeedCard({ post }: Prop) {
               >
                 <Typography sx={{ p: 0 }}>
                   <List>
-                    {
-                      <ListItem>
-                        <ListItemIcon>
+                    {post.isConnected ? (
+                      <ListItem >
+                        <ListItemText primary={"Disconnect"} />
+                      </ListItem>
+                    ) : (
+                      <ListItem onClick={handleCreateConnection}>
+                        <ListItemIcon >
                           <AddIcon />
                         </ListItemIcon>
                         <ListItemText primary={"Connect"} />
                       </ListItem>
-                    }
+                    )}
                     <ListItem>
                       <ListItemIcon>
                         <InsertLinkIcon />
@@ -157,41 +170,24 @@ export default function FeedCard({ post }: Prop) {
         <p className={styles.description}>{post?.content}</p>
       </Box>
       <Box className={styles.images}>
-        {post?.media && (
-          <Box className={styles.image} component={"img"} src={post?.media} />
-        )}
+        {post?.media && <Box className={styles.image} component={"img"} src={post?.media} />}
       </Box>
       <Box className={styles.like_section}>
-        <Box>
-          {post.likeCount[1] !== 0 && (
-            <Typography variant="caption">👍</Typography>
-          )}
-          {post.likeCount[2] !== 0 && (
-            <Typography variant="caption">❤️</Typography>
-          )}
-          {post.likeCount[3] !== 0 && (
-            <Typography variant="caption">🎉</Typography>
-          )}
-          {post.likeCount[4] !== 0 && (
-            <Typography variant="caption">💡</Typography>
-          )}
-          {post.likeCount[5] !== 0 && (
-            <Typography variant="caption">🤝</Typography>
-          )}
-          {post.likeCount[6] !== 0 && (
-            <Typography variant="caption">😂</Typography>
-          )}
-          <Typography sx={{ marginLeft: "0.2rem", display: "inline" }}>
-            {Object.values(post.likeCount).reduce(
-              (acc, count) => acc + count,
-              0,
-            )}
-          </Typography>
-        </Box>
+        {post.likeCount && (
+          <Box>
+            {post?.likeCount[1] !== 0 && <Typography variant="caption">👍</Typography>}
+            {post?.likeCount[2] !== 0 && <Typography variant="caption">❤️</Typography>}
+            {post?.likeCount[3] !== 0 && <Typography variant="caption">🎉</Typography>}
+            {post?.likeCount[4] !== 0 && <Typography variant="caption">💡</Typography>}
+            {post?.likeCount[5] !== 0 && <Typography variant="caption">🤝</Typography>}
+            {post?.likeCount[6] !== 0 && <Typography variant="caption">😂</Typography>}
+            <Typography sx={{ marginLeft: "0.2rem", display: "inline" }}>
+              {Object.values(post.likeCount).reduce((acc, count) => acc + count, 0)}
+            </Typography>
+          </Box>
+        )}
 
-        <Box>
-          {/* {post.comments.length > 0 && <p>{post.comments.length} comments</p>} */}
-        </Box>
+        <Box>{/* {post.comments.length > 0 && <p>{post.comments.length} comments</p>} */}</Box>
       </Box>
       <Divider />
       <Box className={styles.buttons}>
@@ -264,7 +260,7 @@ export default function FeedCard({ post }: Prop) {
             <span>{reactions[(like?.type ?? 1) - 1].label ?? "Like"}</span>
           </Box>
         </Box>
-        <Box className={styles.button} onClick={() => setShowComments(true)}>
+        <Box className={styles.button} onClick={handleComments}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             id="comment-small"
@@ -322,9 +318,9 @@ export default function FeedCard({ post }: Prop) {
       {showComments && (
         <Box className={styles.commentSection}>
           <CommentSection postId={post.id} />
-          {post.comments.map((comment) => (
+          {/* {post.comments.map((comment) => (
             <CommentCard key={comment.id} comment={comment} />
-          ))}
+          ))} */}
         </Box>
       )}
     </Paper>

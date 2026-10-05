@@ -1,12 +1,13 @@
 'use client'
 
 import { Box, Button, FormHelperText, TextField, Typography } from "@mui/material";
-import { useState } from "react";
+import { Dispatch, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAppDispatch } from "../../../../../features/store";
 import { createJobAsync } from "../../../../../features/job/handle-job/job.action";
 import { createJob, createJobOutput, jobSchema } from './create-job.type'
+import { Company } from "@/types/job";
 
 const inputField: {
   type: string;
@@ -14,12 +15,6 @@ const inputField: {
   name: keyof createJobOutput;
   label: string;
 }[] = [
-  {
-    name: "company_id",
-    type: "number",
-    placeholder: "eg: 1",
-    label: "Company ID",
-  },
   {
     name: "position",
     type: "text",
@@ -40,7 +35,12 @@ const inputField: {
   },
 ];
 
-export default function CreateJob() {
+type Prop = {
+  setCompany: Dispatch<React.SetStateAction<Company | undefined>>;
+  readonly company : Company
+} 
+
+export default function CreateJob( {company, setCompany}: Prop) {
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -56,7 +56,7 @@ export default function CreateJob() {
     setLoading(true);
 
     const inputData = {
-      companyId: data.company_id,
+      companyId:company.id,
       job_description: {
         position: data.position,
         salary: data.salary,
@@ -92,6 +92,9 @@ export default function CreateJob() {
 
           <Button type="submit" disabled={loading}>
             {loading ? "Creating..." : "Create"}
+          </Button>
+          <Button onClick={()=> setCompany(undefined)}>
+            Back
           </Button>
         </form>
       </Box>

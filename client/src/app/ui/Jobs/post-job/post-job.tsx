@@ -36,7 +36,6 @@ export default function PostJobModal() {
   const [company, setCompany] = React.useState<Company | undefined>()
   const [createCompany, setCreateCompany] = React.useState<boolean>(false)
 
-  console.log(company)
   return (
     <div>
       <ListItem disablePadding onClick={handleOpen}>
@@ -74,13 +73,16 @@ export default function PostJobModal() {
       >
         <Box sx={style}>
           {
-            !createCompany && <SelectCompany setCompany={setCompany} setcreateCompany={setCreateCompany}/>
+            !createCompany && !company &&<SelectCompany setCompany={setCompany} setcreateCompany={setCreateCompany}/>
           }
           
           {
-            createCompany && <CreateCompany setcreateCompany={setCreateCompany} setCompany={setCompany}/>
+            createCompany && !company && <CreateCompany setcreateCompany={setCreateCompany} setCompany={setCompany}/>
           }
-         
+          {
+            company && <CreateJob company={company} setCompany={setCompany}/>
+          }
+          
   
 
         </Box>

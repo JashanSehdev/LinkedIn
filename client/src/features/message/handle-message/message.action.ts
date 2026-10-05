@@ -2,7 +2,7 @@ import { api } from "@/app/api/api";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchChatMessageAsync = createAsyncThunk(
-  "message/fetch-chat-message",
+  "message/get-chat-message",
   async (chatId : number, thunkApi) => {
     try {
       const response = await api.get(`/message/chat/${chatId}`);

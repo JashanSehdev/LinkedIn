@@ -13,7 +13,8 @@ type Prop = {
 }
 export default function SelectCompany({setcreateCompany, setCompany} : Prop) {
     const dispatch = useAppDispatch()    
-    const companies = useAppSelector((state) => state.jobs.companies)
+    const companies = useAppSelector((state) => state.jobs.user_companies);
+    console.log(companies)
     useEffect(() => {
         dispatch(GetUserCompanyAsync())
     }, [dispatch])
@@ -23,7 +24,7 @@ export default function SelectCompany({setcreateCompany, setCompany} : Prop) {
                 <Typography variant="h4">Select Your Company</Typography>
                 <List>
                     {
-                        companies.map((item) => 
+                        companies?.map((item) => 
                         <ListItem key={item.id} className={styles.listItem} onClick={()=>setCompany(item)}>
                             <ListItemAvatar>
                                 <Avatar 

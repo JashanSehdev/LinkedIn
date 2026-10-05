@@ -23,6 +23,7 @@ import {
   ConnectionStatus,
 } from '../connection/entities/connection.entity.js';
 import { FollowService } from '../follow/follow.service.js';
+import { ConnectionService } from '../connection/connection.service.js';
 
 @Injectable()
 export class UsersService {
@@ -36,8 +37,6 @@ export class UsersService {
 
     @InjectRepository(Connection)
     private readonly connectionRepository: Repository<Connection>,
-
-    private readonly followServices : FollowService
   ) {}
 
   async create(
@@ -114,7 +113,7 @@ export class UsersService {
           message: 'user not found ',
         });
 
-      return user
+      return user;
     } catch (error) {
       throw new UnauthorizedException('Session expired or invalid token');
     }
@@ -136,6 +135,7 @@ export class UsersService {
         ...googleAuthDto,
         password: 'Google Auth',
       });
+
       const user = await this.userRepository.save(createdUser);
       payload = { id: user.id, email: user.email };
     }
@@ -189,26 +189,23 @@ export class UsersService {
         connections: connectReceivedCount + connectSentCount,
       };
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
   async findAllByName(filter: QueryDto) {
-    
-    if (!filter.username) return[]
+    if (!filter.username) return [];
 
-    return  await this.userRepository.find({
+    return await this.userRepository.find({
       where: {
-        username : ILike(`%${filter.username}%`)
+        username: ILike(`%${filter.username}%`),
       },
-      select : {
-        id : true,
-        username :true,
-        email : true
+      select: {
+        id: true,
+        username: true,
+        email: true,
       },
-      take : 10
-
-    })
-
+      take: 10,
+    });
   }
 }

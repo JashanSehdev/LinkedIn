@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -32,6 +33,10 @@ export class Post {
 
   @Column({type : 'varchar', array:true, default: () => "'{}'" })
   hashtags: string[]
+
+  @Column({type : 'integer', nullable : true})
+  parentId : number
+
 
   @OneToMany(() => Comment, (comment) => comment.post)
   comments : Relation<Comment[]>

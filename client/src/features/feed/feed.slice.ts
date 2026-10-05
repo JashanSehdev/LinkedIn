@@ -1,5 +1,5 @@
 import { User } from "@/types/user";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
 import { Comment, Post } from "@/types/feed";
 import {
   createCommentAsync,
@@ -11,6 +11,8 @@ import {
 import { Like } from "./handle-feed/feed.type";
 import { Replace } from "lucide-react";
 import { toggleFollow } from "../follow/handle-follow/follow.action";
+import { config } from "process";
+import { createConnectionAsync } from "../connection/handle-connections/connection.action";
 
 type InitialState = {
   feeds: Post[];
@@ -39,36 +41,36 @@ const feedSlice = createSlice({
 
         const post = state.feeds.find((feed) => feed.id === like.postId);
 
-        if(!post) return
+        if (!post) return;
         if (like.status === "deleted") {
           // post.likes = post.likes.filter((item) => item.id !== like.id);
           // return;
-          post.userLike = null
-          return
+          post.userLike = null;
+          return;
         }
 
         const { status, ...liked } = like;
 
-        post.userLike = liked
+        post.userLike = liked;
+      })
+
+      .addCase(createCommentAsync.fulfilled, (state, action: PayloadAction<Comment>) => {
+        state.feeds = state.feeds.map((item) => {
+        if (Number(item.id) === Number(action.payload.postId)) {
+            return {
+                ...item,
+                comments: [...(item.comments || []), action.payload]
+            };
+        }
+        return item;
+    });
+
+  
       })
 
       .addCase(
-        createCommentAsync.fulfilled,
-        (state, action: PayloadAction<Comment>) => {
-          const post = state.feeds.find(
-            (item) => item.id === action.payload.postId,
-          );
-
-          post?.comments.push(action.payload);
-        },
-      )
-
-      .addCase(
         deleteCommentAsync.fulfilled,
-        (
-          state,
-          action: PayloadAction<{ commentId: number; postId: number }>,
-        ) => {
+        (state, action: PayloadAction<{ commentId: number; postId: number }>) => {
           const { commentId, postId } = action.payload;
           const post = state.feeds.find((feed) => feed.id === postId);
           if (!post) return;
@@ -91,32 +93,11 @@ const feedSlice = createSlice({
       .addCase(toggleFollow.fulfilled, (state, action) => {
         const feed = state.feeds.find((item) => item.user.id === action.payload.followedId);
 
-        if (!feed) return 
+        if (!feed) return;
 
-        feed.isfollowing = action.payload.removed
+        feed.isfollowing = action.payload.removed;
       })
-
-    // .addCase(
-    //   deleteCommentAsync.fulfilled,
-    //   (state, action: PayloadAction<{ commentId: number; postId: number, parentId : number }>) => {
-    //     const { commentId, postId, parentId } = action.payload;
-    //     const post = state.feeds.find((feed) => feed.id === postId);
-    //     if (!post) return;
-
-    // const addNestedComment = (comments: Comment[]): Comment[] => {
-    //   const parentComment = post.comments.find((item) => item.id === parentId)
-    //   ?.map((comment) =>
-    //       comment.childComments
-    //         ? {
-    //             ...comment,
-    //             childComments: removeComment(comment.childComments),
-    //           }
-    //         : comment,
-    //     )
-    // }
-
-    //   // },
-    // )
+     
   },
 });
 

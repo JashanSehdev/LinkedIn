@@ -92,7 +92,7 @@ useEffect(() => {
                 
 
                 <Button className={styles.button} variant="outlined">
-                  <SendIcon /> Message
+                   connect
                 </Button>
                 <Button variant="outlined" className={styles.button}>
                   <MoreHorizIcon />

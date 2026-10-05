@@ -4,21 +4,28 @@ import { UpdateMessageDto } from './dto/update-message.dto.js';
 import { Repository } from 'typeorm';
 import { Message } from './entities/message.entity.js';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ChatGateway } from '../chat/chat.gateway.js';
 
 @Injectable()
 export class MessageService {
   constructor(
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
+    private readonly chatGateway : ChatGateway
   ) {}
 
   async create(createMessageDto: CreateMessageDto, userId: number) {
     const message = this.messageRepository.create({
       ...createMessageDto,
       sender_id: userId,
+
     });
 
-    return await this.messageRepository.save(message);
+    console.log("Create message called")
+
+    const result =  await this.messageRepository.save(message);
+    this.chatGateway.emitNewMessage({ message: result, chatId: result.chat_id} )
+    return result;
   }
 
   findAll() {}

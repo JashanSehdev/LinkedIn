@@ -18,6 +18,10 @@ export class CompanyController {
     findAll(@Query() query : FilterDto, @Req() req : Request & {user : any} ) {
     return this.companyService.findAll(query, req.user.id);
   }
+  @Get('user')
+    getUserCompany( @Req() req : Request & {user : any} ){
+      return this.companyService.getUserCompany(req.user.id)
+    }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

@@ -13,7 +13,11 @@ const initialState: InitialState = {
 const messageSlice = createSlice({
   name: "jobSlice",
   initialState,
-  reducers: {},
+  reducers: {
+    setMessage (state, action) {
+      state.messages.push(action.payload)
+    }
+  },
   extraReducers: (builder) => {
 
 
@@ -26,5 +30,7 @@ const messageSlice = createSlice({
     })
   }
 });
+
+export const {setMessage} = messageSlice.actions
 
 export default messageSlice.reducer;

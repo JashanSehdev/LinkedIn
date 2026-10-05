@@ -1,5 +1,6 @@
 import {
   Box,
+  CircularProgress,
   Divider,
   ListItem,
   ListItemButton,
@@ -8,11 +9,32 @@ import {
   Typography,
 } from "@mui/material";
 import styles from "./job-post.module.css";
-import JobPost from "./job-card/job-card";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
-import { jobs1 } from "@/data/jobs";
+import { useAppDispatch, useAppSelector } from "@/features/store";
+import { useEffect, useState } from "react";
+import { fetchJobs } from "@/features/job/handle-job/job.action";
+import { Job } from "@/types/job";
+import JobPost from "./job-card/job-card";
 
-export default function JobPostCard() {
+export default function JobPostCard( ) {
+  const jobs = useAppSelector((state) => state.jobs.jobs);
+  const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState<boolean>(true)
+
+  useEffect(()=>{ 
+    try {
+      dispatch(fetchJobs())
+
+    } catch (error) {
+      console.error('error occur while fetching jobs');
+      throw error
+    } finally{
+      setLoading(false)
+    }
+  },[dispatch])
+
+
+
   return (
     <Paper className={styles.container}>
       <Box className={styles.header}>
@@ -40,14 +62,9 @@ export default function JobPostCard() {
         </Box>
       </Box>
       <Box>
-        {
-          jobs1.slice(0, 3).map((item) => (
-            <Box key={item.id}>
-              <JobPost job={item}/>
-              <Divider/>
-            </Box>
-            
-          ))
+        {loading ? <CircularProgress/> : 
+         jobs?.map((item) => <JobPost key={item.id} job={item}/>)
+          
         }
       </Box>
 

@@ -1,15 +1,12 @@
 "use client";
 
 import { Avatar, Box, Button, IconButton } from "@mui/material";
-import Image from "next/image";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import styles from "./comments.module.css";
 import { Comment } from "@/types/feed";
 import CommentMenuPopover from "./comments-menu-popover/menu-popover";
 import { KeyboardEvent, useState } from "react";
 import { useAppDispatch } from "@/features/store";
 import { createNestedCommentAsync } from "@/features/feed/handle-feed/feed.action";
-import { clear } from "console";
 import EmojiPicker from "emoji-picker-react";
 import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
 
@@ -60,7 +57,7 @@ export default function CommentCard(prop: Prop) {
         <Box className={styles.section3}>
           <p>{comment.text}</p>
         </Box>
-        <Box><Button>Like</Button><Button onClick={() => setToggleInput(!toggleInput)}>Comment</Button></Box>
+        <Box><Box onClick={() => setToggleInput(!toggleInput)}><svg xmlns="http://www.w3.org/2000/svg" id="comment-small" fill="currentColor" aria-hidden="true" data-supported-dps="16x16" viewBox="0 0 16 16" data-token-id="202" width="16" height="16" className="ckymuo ckya1h ckyhi4 ckyh30 ckygnc ckyg8o"><path d="M5 8h5v1H5zm11-.5v.08a6 6 0 0 1-2.75 5L8 16v-3H5.5A5.51 5.51 0 0 1 0 7.5 5.62 5.62 0 0 1 5.74 2h4.76A5.5 5.5 0 0 1 16 7.5m-2 0A3.5 3.5 0 0 0 10.5 4H5.74A3.62 3.62 0 0 0 2 7.5 3.53 3.53 0 0 0 5.5 11H10v1.33l2.17-1.39A4 4 0 0 0 14 7.58zM5 7h6V6H5z"></path></svg></Box></Box>
         {
           toggleInput && (
             <Box className={styles.inputContainer}>

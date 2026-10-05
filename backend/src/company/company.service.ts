@@ -40,6 +40,16 @@ export class CompanyService {
     })
   }
 
+  async getUserCompany (userId : number) {
+    const relation = await this.companyRepository.find({
+      where : {
+        userId 
+      }
+    })
+
+    return relation
+  }
+
   async findOne(id: number) {
     return await this.companyRepository.findOneByOrFail({id})
   }

@@ -1,10 +1,7 @@
 export type Job = {
     id: number,
-    title: string,
-    company: string,
-    location: string,
-    posted: string,
-    logo: string
+    job_description: Job_description,
+    company : Company
   }
 
   export type Company = {
