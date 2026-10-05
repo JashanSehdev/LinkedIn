@@ -4,15 +4,24 @@ export type Post = {
   id : number,
   content: string,
   media ?: null | string,
-  likes : Like[],
+  likeCount : LikeCount,
   user : User,
   shared: number,
   hashTags: string[]
   comments: Comment[],
   isfollowing: boolean,
-  isconnected : boolean
+  isconnected : boolean,
+  userLike : Like | null
 }
 
+type LikeCount  = {
+  1 : number
+  2 : number
+  3 : number
+  4 : number
+  5 : number
+  6 : number
+}
 export type  User = {
   id : number,
   username : string,

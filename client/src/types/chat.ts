@@ -24,7 +24,7 @@ export type Message = {
     id : number,
     chatId : number,
     text: string,
-    senderId : number,
+    sender_id : number,
     created_at : string,
     update_at : string,
     files ?: File[]

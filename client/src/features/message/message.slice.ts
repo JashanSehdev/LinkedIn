@@ -1,8 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { fetchCompaniesAsync, GetUserCompanyAsync } from "./handle-job/job.action";
-import { Company } from "@/types/job";
 import { Message } from "@/types/chat";
-import { createMessage, createMessageAsync, fetchChatMessage, fetchChatMessageAsync } from "./handle-message/message.action";
+import {  createMessageAsync, fetchChatMessageAsync } from "./handle-message/message.action";
 
 type InitialState = {
   messages : Message[];

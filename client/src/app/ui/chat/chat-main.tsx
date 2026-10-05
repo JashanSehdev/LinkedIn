@@ -29,7 +29,6 @@ import { useRouter } from "next/navigation";
 import { createMessageAsync, fetchChatMessageAsync } from "@/features/message/handle-message/message.action";
 import { SubmitHandler, useForm } from "react-hook-form";
 import CloudinaryUploader from "./upload-widget/cloudinary-widget";
-import { file } from "zod";
 
 
 type Inputs = {
@@ -44,6 +43,7 @@ export default function  ChatMain({roomId} : {roomId ?: number}) {
   const dispatch = useAppDispatch();
   const connections = useAppSelector((state) => state.connection.connections);
   const chatrooms = useAppSelector((state) => state.room.chatRoom);
+  const user = useAppSelector((state) => state.auth.user);
   const router = useRouter();
   const messages = useAppSelector((state) => state.messages.messages)
 
@@ -150,7 +150,7 @@ export default function  ChatMain({roomId} : {roomId ?: number}) {
             <Box>
               <Box className={styles.chatHeader}>
                 <Box>
-                  <Typography>Username</Typography>
+                  <Typography>{'username '}</Typography>
                   <Typography variant="subtitle2">Mobile 6h</Typography>
                 </Box>
                 <Box>
@@ -180,7 +180,7 @@ export default function  ChatMain({roomId} : {roomId ?: number}) {
                 )}
 
                 {
-                  roomId && messages.map((item) => (<Box key={item.id}> 
+                  roomId && messages.map((item) => (<Paper key={item.id} className={styles.text} sx={{alignSelf:item.sender_id === user?.id ? "end" : "flex-start"}}> 
                   {
                     item.files && item.files.length > 0 && (
                       <>
@@ -191,12 +191,11 @@ export default function  ChatMain({roomId} : {roomId ?: number}) {
                         height={100}
                         width={100}
                       />
-                      <br/>
                       </>
                     )
                   }
                     {item.text}
-                  </Box>))
+                  </Paper>))
                 }
               </Box>
               <Box className={styles.chatPanel}>

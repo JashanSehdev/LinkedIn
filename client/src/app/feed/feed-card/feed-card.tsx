@@ -17,15 +17,13 @@ import styles from "./feed-card.module.css";
 import CommentCard from "../comment-section/comments/comments";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/features/store";
-import {
-  likeAsync,
-} from "@/features/feed/handle-feed/feed.action";
+import { likeAsync } from "@/features/feed/handle-feed/feed.action";
 import { Post } from "@/types/feed";
 import CommentSection from "../comment-section/comment-section";
 import { toggleFollow } from "@/features/follow/handle-follow/follow.action";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import InsertLinkIcon from '@mui/icons-material/InsertLink';
-import AddIcon from '@mui/icons-material/Add';
+import InsertLinkIcon from "@mui/icons-material/InsertLink";
+import AddIcon from "@mui/icons-material/Add";
 
 type Like = {
   id: number;
@@ -130,19 +128,21 @@ export default function FeedCard({ post }: Prop) {
                   horizontal: "right",
                 }}
               >
-                <Typography sx={{ p: 0}}>
+                <Typography sx={{ p: 0 }}>
                   <List>
-                    {<ListItem>
-                      <ListItemIcon>
-                        <AddIcon/>
-                      </ListItemIcon>
-                      <ListItemText primary={"Connect"}/>
-                    </ListItem>}
+                    {
+                      <ListItem>
+                        <ListItemIcon>
+                          <AddIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={"Connect"} />
+                      </ListItem>
+                    }
                     <ListItem>
                       <ListItemIcon>
-                        <InsertLinkIcon/>
+                        <InsertLinkIcon />
                       </ListItemIcon>
-                      <ListItemText primary={'Copy link to post'} />
+                      <ListItemText primary={"Copy link to post"} />
                     </ListItem>
                   </List>
                 </Typography>
@@ -163,26 +163,29 @@ export default function FeedCard({ post }: Prop) {
       </Box>
       <Box className={styles.like_section}>
         <Box>
-          {post?.likes?.some((item) => item.type === 1) && (
+          {post.likeCount[1] !== 0 && (
             <Typography variant="caption">👍</Typography>
           )}
-          {post?.likes?.some((item) => item.type === 2) && (
+          {post.likeCount[2] !== 0 && (
             <Typography variant="caption">❤️</Typography>
           )}
-          {post?.likes?.some((item) => item.type === 3) && (
+          {post.likeCount[3] !== 0 && (
             <Typography variant="caption">🎉</Typography>
           )}
-          {post?.likes?.some((item) => item.type === 4) && (
+          {post.likeCount[4] !== 0 && (
             <Typography variant="caption">💡</Typography>
           )}
-          {post?.likes?.some((item) => item.type === 5) && (
+          {post.likeCount[5] !== 0 && (
             <Typography variant="caption">🤝</Typography>
           )}
-          {post?.likes?.some((item) => item.type === 6) && (
+          {post.likeCount[6] !== 0 && (
             <Typography variant="caption">😂</Typography>
           )}
           <Typography sx={{ marginLeft: "0.2rem", display: "inline" }}>
-            {post?.likes?.length}
+            {Object.values(post.likeCount).reduce(
+              (acc, count) => acc + count,
+              0,
+            )}
           </Typography>
         </Box>
 
@@ -244,7 +247,7 @@ export default function FeedCard({ post }: Prop) {
           )}
 
           <Box className={styles.button} onClick={handleLike}>
-            {!like ? (
+            {!post?.userLike?.type ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill={"currentColor"}
@@ -255,7 +258,7 @@ export default function FeedCard({ post }: Prop) {
                 <path d="m12.91 7-2.25-2.57a8.2 8.2 0 0 1-1.5-2.55L9 1.37A2.08 2.08 0 0 0 7 0a2.08 2.08 0 0 0-2.06 2.08v1.17a5.8 5.8 0 0 0 .31 1.89l.28.86H2.38A1.47 1.47 0 0 0 1 7.47a1.45 1.45 0 0 0 .64 1.21 1.48 1.48 0 0 0-.37 2.06 1.54 1.54 0 0 0 .62.51h.05a1.6 1.6 0 0 0-.19.71A1.47 1.47 0 0 0 3 13.42v.1A1.46 1.46 0 0 0 4.4 15h4.83a5.6 5.6 0 0 0 2.48-.58l1-.42H14V7zM12 12.11l-1.19.52a3.6 3.6 0 0 1-1.58.37H5.1a.55.55 0 0 1-.53-.4l-.14-.48-.49-.21a.56.56 0 0 1-.34-.6l.09-.56-.42-.42a.56.56 0 0 1-.09-.68L3.55 9l-.4-.61A.28.28 0 0 1 3.3 8h5L7.14 4.51a4.2 4.2 0 0 1-.2-1.26V2.08A.09.09 0 0 1 7 2a.1.1 0 0 1 .08 0l.18.51a10 10 0 0 0 1.9 3.24l2.84 3z" />
               </svg>
             ) : (
-              reactions[like.type - 1]?.icon
+              reactions[post?.userLike?.type - 1]?.icon
             )}
 
             <span>{reactions[(like?.type ?? 1) - 1].label ?? "Like"}</span>
@@ -320,7 +323,6 @@ export default function FeedCard({ post }: Prop) {
         <Box className={styles.commentSection}>
           <CommentSection postId={post.id} />
           {post.comments.map((comment) => (
-
             <CommentCard key={comment.id} comment={comment} />
           ))}
         </Box>

@@ -21,9 +21,10 @@ export function GoogleAuthButton() {
       // const idToken = await result.user.getIdToken();
   
       // // await createSession(idToken);
+      const username = result.user.displayName
       const email = result.user.email
       if (!email) throw new Error('Unable to login')
-      await dispatch(googleLoginAsync(email))
+      await dispatch(googleLoginAsync({email, username }))
       await dispatch(getUserAsync());
       redirect("/feed")
     } catch (error: any) {

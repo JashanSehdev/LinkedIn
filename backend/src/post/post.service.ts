@@ -57,13 +57,15 @@ export class PostService {
       }
     });
 
+
     return await Promise.all(
       posts.map(async (post) => {
         return {
           ...post,
           likeCount :  await this.likeService.getReactionCounts(post.id),
           isFollowing :  await this.followService.isFollowing(userId, post.user.id),
-          isConnected : await this.connectionService.getConnectionStatus(userId, post.user.id)
+          isConnected : await this.connectionService.getConnectionStatus(userId, post.user.id),
+          userLike : await this.likeService.findUserLike(post.id, userId)
         };
       }),
     );

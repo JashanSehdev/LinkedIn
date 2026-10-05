@@ -4,7 +4,8 @@ export type Like = {
     id :number
     userId : number,
     postId : number,
-    status : string
+    status : string,
+    type :number
     
 }
 

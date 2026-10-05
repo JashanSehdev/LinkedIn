@@ -41,17 +41,15 @@ const feedSlice = createSlice({
 
         if(!post) return
         if (like.status === "deleted") {
-          post.likes = post.likes.filter((item) => item.id !== like.id);
-          return;
-        }
-
-        if (like.status === "replaced") {
-          post.likes = post.likes.filter((item) => item.userId !== like.userId);
+          // post.likes = post.likes.filter((item) => item.id !== like.id);
+          // return;
+          post.userLike = null
+          return
         }
 
         const { status, ...liked } = like;
 
-        post.likes.push(liked);
+        post.userLike = liked
       })
 
       .addCase(

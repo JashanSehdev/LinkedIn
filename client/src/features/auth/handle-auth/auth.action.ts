@@ -66,11 +66,17 @@ export const logoutUserAsync =  createAsyncThunk(
     }
 )
 
+
+type Data = {
+    email : string,
+    username : string
+}
 export const googleLoginAsync =  createAsyncThunk(
     'auth/googleLogin',
-    async (email : string, thunkApi) => {
+    
+    async ( data : Data, thunkApi) => {
           try {
-            const response = await api.post("/auth/google", {email})
+            const response = await api.post("/auth/google", data)
             console.log(response.data)
             // redirect("/")
 

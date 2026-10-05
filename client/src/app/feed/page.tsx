@@ -14,7 +14,6 @@ import { fetchFollowings } from "@/features/follow/handle-follow/follow.action";
 
 export default function Feed() {
   const feeds = useAppSelector((state) => state.feed.feeds);
-  const following = useAppSelector((state)=> state.follow.Followings)
   const dispatch = useAppDispatch()
   useEffect(() => {
     try{
@@ -24,7 +23,6 @@ export default function Feed() {
       console.error(error)
     }
   },[])
-  console.log("following",following)
 
   return (
     <Box className={styles.container}>

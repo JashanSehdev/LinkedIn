@@ -64,6 +64,7 @@ export default function HomeNavbar() {
             </svg>
             <p>Jobs</p>
           </Link>
+          <Link  href={'/messaging'}>
           <Box className={styles.button}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -78,6 +79,7 @@ export default function HomeNavbar() {
             </svg>
             <p>Messaging</p>
           </Box>
+          </Link>
           <Link href={'/notifications'} className={styles.button}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
