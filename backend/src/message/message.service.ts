@@ -37,6 +37,14 @@ export class MessageService {
       },
       relations: {
         files: true,
+        sender:true
+      },
+
+      select : {
+        sender:{
+          id : true,
+          username:true
+        }
       },
 
       order: {
@@ -44,6 +52,9 @@ export class MessageService {
       },
     });
   }
+
+ 
+
 
   async findUserMessage(userId: number) {
     return await this.messageRepository.find({

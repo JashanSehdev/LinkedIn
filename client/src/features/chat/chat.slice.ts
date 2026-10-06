@@ -1,6 +1,6 @@
 import { chatRoom } from "@/types/chat";
 import { createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {  getRoomAsync } from "./handle-chat/chat.actions";
+import {  getRoomsAsync } from "./handle-chat/chat.actions";
 
 
 type InitialState = {
@@ -16,10 +16,9 @@ const chatSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getRoomAsync.fulfilled, (state, action : PayloadAction<chatRoom[]>) => {
+    builder.addCase(getRoomsAsync.fulfilled, (state, action : PayloadAction<chatRoom[]>) => {
         state.chatRoom = action.payload
     })
-
   }
 });
 

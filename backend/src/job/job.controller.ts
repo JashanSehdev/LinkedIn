@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
 import { JobService } from './job.service.js';
 import { CreateJobDto } from './dto/create-job.dto.js';
 import { UpdateJobDto } from './dto/update-job.dto.js';
@@ -18,6 +18,11 @@ export class JobController {
   @Get()
   async findAll() {
     return await this.jobService.findAll();
+  }
+
+  @Get('user/:id')
+  findJob(@Param('id') jobId : number, @Req() req : {user : any}) {
+    return this.jobService.findUserJob(jobId, req.user.id)
   }
 
   @Get(':id')

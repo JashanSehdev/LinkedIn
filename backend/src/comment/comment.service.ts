@@ -46,6 +46,15 @@ export class CommentService {
         postId,
         parentId: IsNull()
       },
+      relations :{
+        user:true
+      },
+      select: {
+        user:{
+          username : true,
+          id : true
+        }
+      }
     })
     return parentComment
   }
@@ -54,6 +63,16 @@ export class CommentService {
     return await this.commentRepository.find({
       where : {
         parentId : commentId
+      },
+      relations:{
+        user : true
+      },
+
+      select : {
+        user : {
+          username : true,
+          id : true
+        }
       }
     })
   }
@@ -80,4 +99,6 @@ export class CommentService {
     const comment = await this.findOne(id)
     return this.commentRepository.remove(comment);
   }
+
+
 }

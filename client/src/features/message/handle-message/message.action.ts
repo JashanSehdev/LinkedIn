@@ -13,11 +13,13 @@ export const fetchChatMessageAsync = createAsyncThunk(
   },
 );
 
+
 type CreateMessage = {
     chat_id : number,
     text : string,
     files ?: File[]
 }
+
 
 type File = {
   file_name : string,
@@ -25,6 +27,7 @@ type File = {
   file_size : number,
   file_url : string
 }
+
 
 export const createMessageAsync = createAsyncThunk(
   "message/create-message",

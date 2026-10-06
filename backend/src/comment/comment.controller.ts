@@ -29,8 +29,13 @@ export class CommentController {
   }
 
   @Get('post/:id')
-  findPostcomments(@Param('id', ParseIntPipe) postId : number ) {
+  findPostComments(@Param('id', ParseIntPipe) postId : number ) {
     return this.commentService.getParentComments(postId)
+  }
+
+  @Get(`/child/:id`)
+  getChildrenComment(@Param('id') childComment : number ) {
+    return this.commentService.getChildrenComments(childComment)
   }
 
   //this route will return only children

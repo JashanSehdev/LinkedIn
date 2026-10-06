@@ -1,13 +1,12 @@
-import { Box, IconButton, Typography } from "@mui/material";
-import Image from "next/image";
-import logo from "@/../public/flipKart.png";
+import { Box, Typography } from "@mui/material";
 import styles from "./job-card.module.css";
-import CloseIcon from "@mui/icons-material/Close";
 import { Job } from "@/types/job";
+import { useRouter } from "next/navigation";
 
 export default function JobPost({job} : {job:Job}) {
+  const router = useRouter()
   return (
-    <Box className={styles.container}>
+    <Box className={styles.container} onClick={() => router.push(`jobs/${job.id}`)}>
       <Box className={styles.section1}>
         <Box component={'img'} sx={{objectFit: 'cover'}} height={50} width={50} src={job?.company.company_logo ?? 'string'} alt="logo" />
         <Box>
@@ -17,9 +16,9 @@ export default function JobPost({job} : {job:Job}) {
         </Box>
       </Box>
 
-      <IconButton className={styles.logo}>
+      {/* <IconButton className={styles.logo}>
         <CloseIcon />
-      </IconButton>
+      </IconButton> */}
     </Box>
   );
 }

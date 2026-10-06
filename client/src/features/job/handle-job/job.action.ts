@@ -86,7 +86,19 @@ export const fetchJobByIdAsync = createAsyncThunk(
   'job/fetch-job-by-Id', 
   async (id : number, thunkApi) => {
     try {
-      const response = await api.get(`/jobs/${id}`)
+      const response = await api.get(`/jobs/user/${id}`)
+      return response.data
+    }catch (error: any) {
+      return thunkApi.rejectWithValue(error?.response?.data || "something went wrong");
+    }
+  }
+)
+
+export const applyJobAsync = createAsyncThunk(
+  'job/apply-to-job',
+  async(jobId: number, thunkApi) => {
+    try {
+      const response = await api.post(`/applied_job`, {jobId})
       return response.data
     }catch (error: any) {
       return thunkApi.rejectWithValue(error?.response?.data || "something went wrong");

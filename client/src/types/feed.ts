@@ -12,9 +12,9 @@ export type Post = {
   isfollowing: boolean,
   isConnected : boolean,
   userLike : Like | null,
-    isRepost: boolean;
+  isRepost: boolean;
   repostOfId: number | null;
-  repostOf: RepostOf | null;
+  repostOf: Post | null;
 
 }
 
@@ -59,6 +59,12 @@ export type Comment = {
   parentId : number | null,
   userId : number,
   postId : number,
+  user: CommentUser
+}
+
+type CommentUser = {
+  id : number,
+  username :string
 }
 
 export type Like =  {

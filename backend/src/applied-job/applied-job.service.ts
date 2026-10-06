@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateAppliedJobDto } from './dto/create-applied-job.dto.js';
 import { UpdateAppliedJobDto } from './dto/update-applied-job.dto.js';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,10 +12,22 @@ export class AppliedJobService {
     private readonly appliedJobRepository : Repository<AppliedJob>
   ){}
   async create(createAppliedJobDto: CreateAppliedJobDto, userId : number) {
+     const existingAppliedRequest = await this.getAppliedRequest(createAppliedJobDto.jobId, userId);
+
+     if (existingAppliedRequest) throw new ConflictException({code : 'ALREADY_EXIST', message : 'job applied request already exist'  })
      const appliedJob = this.appliedJobRepository.create({...createAppliedJobDto, userId});
 
      return await this.appliedJobRepository.save(appliedJob)
 
+  }
+
+  async getAppliedRequest (jobId : number, userId : number) {
+    return await this.appliedJobRepository.findOne({
+      where: {
+        jobId,
+        userId
+      }
+    })
   }
 
   async findAll() {

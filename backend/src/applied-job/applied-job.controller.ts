@@ -3,7 +3,7 @@ import { AppliedJobService } from './applied-job.service.js';
 import { CreateAppliedJobDto } from './dto/create-applied-job.dto.js';
 import { UpdateAppliedJobDto } from './dto/update-applied-job.dto.js';
 
-@Controller('applied-job')
+@Controller('applied_job')
 export class AppliedJobController {
   constructor(private readonly appliedJobService: AppliedJobService) {}
 

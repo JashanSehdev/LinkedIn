@@ -1,7 +1,8 @@
 export type Job = {
     id: number,
     job_description: Job_description,
-    company : Company
+    company : Company,
+    isApplied ?: number
   }
 
   export type Company = {

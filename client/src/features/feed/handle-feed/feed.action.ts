@@ -2,6 +2,7 @@ import { api } from "@/app/api/api";
 import { Inputs } from "@/app/ui/post-job/create-post";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { CommentInput, createRepost, NestedCommentInput } from "./feed.type";
+import { Comment } from "@/types/feed";
 
 export const fetchAllFeedAsync = createAsyncThunk(
   "feed/fetchAllFeed",
@@ -149,5 +150,19 @@ export const createRepostThunk = createAsyncThunk(
       )
     }
     
+  }
+)
+
+export const fetchChildComments = createAsyncThunk(
+  'fetch-comments',
+  async(commentId : number, thunkApi) => {
+    try{
+      const response = await api.get(`/comment/child/${commentId}`)
+      return response.data as Comment[]
+    } catch (error : any) {
+      return thunkApi.rejectWithValue(
+        error.response.data || 'something went wrong'
+      )
+    }
   }
 )

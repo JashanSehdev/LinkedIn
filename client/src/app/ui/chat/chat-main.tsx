@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Avatar,
   Box,
@@ -24,7 +25,11 @@ import SentimentSatisfiedAltOutlinedIcon from "@mui/icons-material/SentimentSati
 import { useAppDispatch, useAppSelector } from "@/features/store";
 import { fetchConnectionAsync } from "@/features/connection/handle-connections/connection.action";
 import { useEffect, useRef, useState } from "react";
-import { createChatAsync, getRoomAsync } from "@/features/chat/handle-chat/chat.actions";
+import {
+  createChatAsync,
+  getRoomAsync,
+  getRoomsAsync,
+} from "@/features/chat/handle-chat/chat.actions";
 import { useRouter } from "next/navigation";
 import {
   createMessageAsync,
@@ -34,10 +39,22 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import CloudinaryUploader from "./upload-widget/cloudinary-widget";
 import { socket } from "@/lib/socket";
 import { Message } from "@/types/chat";
+import SearchIcon from '@mui/icons-material/Search';
 
 type Inputs = {
   text: string;
   file_url: string;
+};
+
+type User = {
+  id: number;
+  username: string;
+};
+type Room = {
+  id: number;
+  user1: User;
+  user2: User;
+  user: User;
 };
 
 export default function ChatMain({ roomId }: { roomId?: number }) {
@@ -49,13 +66,14 @@ export default function ChatMain({ roomId }: { roomId?: number }) {
   const user = useAppSelector((state) => state.auth.user);
   const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([]);
+  const [room, setRoom] = useState<Room | null>();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-  //form handlingchat-main
+
   const {
     register,
     handleSubmit,
@@ -106,23 +124,13 @@ export default function ChatMain({ roomId }: { roomId?: number }) {
 
     const fetchMessage = async () => {
       const result = await dispatch(fetchChatMessageAsync(roomId)).unwrap();
+      const chat_room = await dispatch(getRoomAsync(roomId)).unwrap();
+      setRoom(chat_room);SearchIcon
       setMessages(result);
     };
     fetchMessage();
   }, [roomId, dispatch]);
 
-  // useEffect(() => {
-  //   if (!roomId) return;
-
-  //   const handleReceiveMessage = (message: any) => {
-  //     dispatch({ type: 'message/get-chat-message', payload: message });
-  //   }
-  //    socket.on('events', handleReceiveMessage);
-
-  //   return () => {
-  //     socket.off('events', handleReceiveMessage);
-  //   };
-  // },[roomId, dispatch])
 
   const handleConnections = async () => {
     if (addToChat) {
@@ -134,7 +142,7 @@ export default function ChatMain({ roomId }: { roomId?: number }) {
   };
 
   useEffect(() => {
-    dispatch(getRoomAsync());
+    dispatch(getRoomsAsync());
   }, [dispatch]);
 
   useEffect(() => {
@@ -152,12 +160,16 @@ export default function ChatMain({ roomId }: { roomId?: number }) {
   }, []);
 
   return (
-    <Container>
+    <Container maxWidth="md" className={styles.container}>
       <Paper>
         <Box className={styles.header}>
           <Box className={styles.searchContainer}>
-            <Typography>Messaging</Typography>
-            <input />
+            <Typography variant="h6">Messaging</Typography>
+            <Box className={styles.searchInput}>
+              <SearchIcon/>
+                <input placeholder="Search"/>
+            </Box>
+            
           </Box>
 
           <Box>
@@ -172,7 +184,7 @@ export default function ChatMain({ roomId }: { roomId?: number }) {
         <Box>
           <Divider />
           <Box className={styles.main}>
-            <Paper>
+            <Box className={styles.roomListContainer}>
               <List>
                 {chatrooms.map((room) => (
                   <ListItem
@@ -188,12 +200,12 @@ export default function ChatMain({ roomId }: { roomId?: number }) {
                   </ListItem>
                 ))}
               </List>
-            </Paper>
+            </Box>
             <Box>
               <Box className={styles.chatHeader}>
                 <Box>
-                  <Typography>{"username "}</Typography>
-                  <Typography variant="subtitle2">Mobile 6h</Typography>
+                  <Typography>{room?.user.username }</Typography>
+                  <Typography variant="subtitle2">{room && 'Mobile 6h'}</Typography>
                 </Box>
                 <Box>
                   <IconButton>
@@ -215,7 +227,7 @@ export default function ChatMain({ roomId }: { roomId?: number }) {
                             key={connection.connectionId}
                             onClick={() => {
                               dispatch(createChatAsync(connection.user.id));
-                              dispatch(getRoomAsync());
+                              // dispatch(getRoomAsync(roomId));
                             }}
                           >
                             <ListItemAvatar>
@@ -230,24 +242,27 @@ export default function ChatMain({ roomId }: { roomId?: number }) {
 
                   {roomId &&
                     messages.map((item) => (
-                      <Paper
-                        key={item.id}
-                        className={styles.text}
-                        sx={{ alignSelf: item.sender_id === user?.id ? "end" : "flex-start" }}
-                      >
-                        {item.files && item.files.length > 0 && (
-                          <>
-                            <Box
-                              component={"img"}
-                              src={item.files[0].file_url}
-                              alt="sticker"
-                              height={100}
-                              width={100}
-                            />
-                          </>
-                        )}
-                        {item.text}
-                      </Paper>
+                      <Box key={item.id}>
+                        <Divider />
+                        <Box className={styles.messageInnerContainer}>
+                          <Avatar className={styles.chatAvatar}>{item.sender_id}</Avatar>
+                          <Box
+                            className={styles.message}
+                            sx={{ alignSelf: item.sender_id === user?.id ? "end" : "flex-start" }}
+                          >
+                            {item.files && item.files.length > 0 && (
+                              <Box
+                                component={"img"}
+                                src={item.files[0].file_url}
+                                alt="sticker"
+                                height={100}
+                                width={100}
+                              />
+                            )}
+                            {item.text}
+                          </Box>
+                        </Box>
+                      </Box>
                     ))}
                 </Box>
               </div>

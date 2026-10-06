@@ -17,7 +17,7 @@ export const createChatAsync = createAsyncThunk(
     }
 )
 
-export const getRoomAsync = createAsyncThunk(
+export const getRoomsAsync = createAsyncThunk(
     'chat/get-rooms',
     async(_, thunkApi) =>{
         try{
@@ -29,6 +29,23 @@ export const getRoomAsync = createAsyncThunk(
         } catch (err:any) {
             return thunkApi.rejectWithValue(
                 err?.resoponse?.data || 'something went wrong'
+            )
+        }
+    }
+)
+
+export const getRoomAsync = createAsyncThunk(
+    'chat/get-room',
+    async(chatId : number, thunkApi) =>{
+        try{
+
+            const response = await api.get(`/chat/user/${chatId}`)
+
+            return response.data
+
+        } catch (err:any) {
+            return thunkApi.rejectWithValue(
+                err?.response?.data || 'something went wrong'
             )
         }
     }

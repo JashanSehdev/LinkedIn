@@ -66,6 +66,37 @@ export class ChatService {
     return await this.chatRepository.findOneBy({ id });
   }
 
+  async getChat(id : number, userId : number) {
+    const room =  await this.chatRepository.findOne({
+      where : {
+        id
+      },
+      relations:{
+        user1 : true,
+        user2: true
+      },
+      select: {
+        user1: {
+          id: true,
+          username: true,
+        },
+        user2: {
+          id: true,
+          username: true,
+        },
+    }
+  })
+
+  if (!room) throw new NotFoundException({code : 'NOT_FOUND', message : 'chat not found'})
+
+  const otherUser = (room.user1.id === userId) 
+      ? room.user2 : room.user1;
+
+      return  {
+        ...room,
+        user : otherUser
+      }
+  }
   async update(id: number, updateChatDto: UpdateChatDto) {
     let chat = await this.findOne(id);
     if (!chat)

@@ -15,12 +15,13 @@ import { useEffect, useState } from "react";
 import { fetchJobs } from "@/features/job/handle-job/job.action";
 import { Job } from "@/types/job";
 import JobPost from "./job-card/job-card";
+import { useRouter } from "next/navigation";
 
 export default function JobPostCard( ) {
   const jobs = useAppSelector((state) => state.jobs.jobs);
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState<boolean>(true)
-
+  const route = useRouter()
   useEffect(()=>{ 
     try {
       dispatch(fetchJobs())
@@ -63,7 +64,7 @@ export default function JobPostCard( ) {
       </Box>
       <Box>
         {loading ? <CircularProgress/> : 
-         jobs?.map((item) => <JobPost key={item.id} job={item}/>)
+         jobs?.map((item) => <JobPost key={item.id} job={item} />)
           
         }
       </Box>

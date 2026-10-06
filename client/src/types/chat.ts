@@ -7,12 +7,18 @@ export type chatRoom = {
 }
 
 export type message = {
-    id : number
+    id : number,
     chat_id : number,
     sender_id : number,
     text : string,
     created_at : string,
-    updated_at : string
+    updated_at : string,
+    sender : Sender
+}
+
+type Sender = {
+    id : number,
+    username : string
 }
 
 type chatUser = {

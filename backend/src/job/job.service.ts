@@ -4,12 +4,14 @@ import { UpdateJobDto } from './dto/update-job.dto.js';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Job } from './entities/job.entity.js';
+import { AppliedJobService } from '../applied-job/applied-job.service.js';
 
 @Injectable()
 export class JobService {
   constructor(
     @InjectRepository(Job)
-    private readonly jobRepository : Repository<Job>
+    private readonly jobRepository : Repository<Job>,
+    private readonly appliedJobService :AppliedJobService
   ){}
   async create(createJobDto: CreateJobDto) {
     const job = this.jobRepository.create(createJobDto)
@@ -22,6 +24,25 @@ export class JobService {
         company: true
       }
     })
+  }
+
+  async findUserJob(jobId : number, userId : number ) {
+    const job = await this.jobRepository.findOne({
+      where : {
+        id : jobId
+      },
+      relations:{
+        company : true
+      }
+    })
+
+    const existingAppliedJob = await this.appliedJobService.getAppliedRequest(jobId, userId)
+    const isApplied  = existingAppliedJob?.id 
+
+    return  {
+      ...job ,
+      isApplied
+    }
   }
 
   async findOne(id: number) {

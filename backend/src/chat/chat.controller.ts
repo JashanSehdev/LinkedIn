@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, ParseIntPipe } from '@nestjs/common';
 import { ChatService } from './chat.service.js';
 import { CreateChatDto } from './dto/create-chat.dto.js';
 import { UpdateChatDto } from './dto/update-chat.dto.js';
@@ -21,6 +21,11 @@ export class ChatController {
   @Get('user')
   getRooms(@Req() req : Request & {user : any}){
     return this.chatService.userRoom(req.user.id)
+  }
+
+  @Get('user/:id')
+  getRoom(@Param('id', ParseIntPipe) chatId : number ,@Req() req : Request & {user : any}){
+    return this.chatService.getChat(chatId, req.user.id)
   }
 
   @Get(':id')

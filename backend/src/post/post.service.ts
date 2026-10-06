@@ -56,12 +56,33 @@ export class PostService {
     const posts = await this.postRepository.find({
       relations: {
         user: true,
+        repostOf : {
+          user : true
+        },
       },
       select: {
         user: {
           id: true,
           username: true,
         },
+        repostOf :{
+           id: true,
+        content: true,
+        media: true,
+        shared: true,
+        hashtags: true,
+        parentId: true,
+        isRepost: true,
+        repostOfId: true,
+
+        user: {
+          id: true,
+          username: true,
+        },
+        }
+        
+        
+      
       },
     });
 
@@ -162,7 +183,11 @@ export class PostService {
   }
 
   async findRepost(postRef: Post, userId: number) {
+    
     return await this.postRepository.findOne({
+      relations: {
+        repostOf : true
+      },
       where: {
         repostOf: {
           id: postRef.id,
@@ -181,6 +206,7 @@ export class PostService {
       },
       relations: {
         user: true,
+        repostOf: true
       },
       select: {
         user: {

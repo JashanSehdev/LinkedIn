@@ -40,7 +40,7 @@ const feedSlice = createSlice({
         const like = action.payload;
 
         const post = state.feeds.find((feed) => feed.id === like.postId);
-
+        console.log("feed-slice", post)
         if (!post) return;
         if (like.status === "deleted") {
           // post.likes = post.likes.filter((item) => item.id !== like.id);

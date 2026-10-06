@@ -14,7 +14,6 @@ import {
   Typography,
 } from "@mui/material";
 import styles from "./feed-card.module.css";
-import CommentCard from "../comment-section/comments/comments";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/features/store";
 import { createRepostThunk, likeAsync } from "@/features/feed/handle-feed/feed.action";
@@ -26,8 +25,8 @@ import InsertLinkIcon from "@mui/icons-material/InsertLink";
 import AddIcon from "@mui/icons-material/Add";
 import {
   createConnectionAsync,
-  deleteConnectionAsync,
 } from "@/features/connection/handle-connections/connection.action";
+
 
 type Like = {
   id: number;
@@ -42,6 +41,7 @@ type Prop = {
 
 const profilePic =
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZoUCWyo0v99yE5-EXx56NlHdIsvsnOT0lFvj4CPqtJw&s=10";
+
 
 export const reactions = [
   { type: "LIKE", label: "Like", icon: "👍" },
@@ -100,9 +100,12 @@ export default function FeedCard({ post }: Prop) {
     navigator.clipboard.writeText(window.location.toString() + `/${post.id}`);
   };
 
+
+
+
   return (<Box>
     {
-        post.isRepost && <Paper> <Typography>{post.user.username} reposted this</Typography> </Paper>
+        post?.isRepost && <Paper> <Typography sx={{paddingLeft : '10px'}}>{post.user.username} reposted this</Typography> </Paper>
       }
     <Paper className={styles.container}>
       
@@ -148,7 +151,7 @@ export default function FeedCard({ post }: Prop) {
               >
                 <Typography sx={{ p: 0 }}>
                   <List>
-                    {post.isConnected ? (
+                    {post?.isConnected ? (
                       <ListItem >
                         <ListItemText primary={"Disconnect"} />
                       </ListItem>
@@ -176,13 +179,16 @@ export default function FeedCard({ post }: Prop) {
         </Box>
       </Box>
       <Box>
-        <p className={styles.description}>{post.isRepost ? post.repostOf?.content: post?.content}</p>
+        <p className={styles.description}>{ post?.content}</p>
       </Box>
+      {
+        post?.isRepost ? <FeedCard post={post.repostOf}/> : <Box></Box>
+      }
       <Box className={styles.images}>
-        {post?.media && <Box className={styles.image} component={"img"} src={post?.media} />}
+        {post?.media && <Box className={styles.image} component={"img"} src={(post.isRepost ? post.repostOf?.media : post?.media) ?? 'undefined'} />}
       </Box>
       <Box className={styles.like_section}>
-        {post.likeCount && (
+        {post?.likeCount && (
           <Box>
             {post?.likeCount[1] !== 0 && <Typography variant="caption">👍</Typography>}
             {post?.likeCount[2] !== 0 && <Typography variant="caption">❤️</Typography>}
@@ -199,7 +205,7 @@ export default function FeedCard({ post }: Prop) {
         <Box>{/* {post.comments.length > 0 && <p>{post.comments.length} comments</p>} */}</Box>
       </Box>
       <Divider />
-      <Box className={styles.buttons}>
+      { post&& <Box className={styles.buttons}>
         <Box
           className={styles.likeWrapper}
           onMouseEnter={() => setShowReactions(true)}
@@ -321,7 +327,7 @@ export default function FeedCard({ post }: Prop) {
           </svg>
           <span>Send</span>
         </Box>
-      </Box>
+      </Box>}
       {showComments && <Divider />}
 
       {showComments && (
